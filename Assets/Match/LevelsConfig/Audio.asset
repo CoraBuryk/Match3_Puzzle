@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64b96cded51a7a347b26794e1aa528ee, type: 3}
+  m_Name: Audio
+  m_EditorClassIdentifier: 
+  masterGroup: {fileID: 24300002, guid: 7ac9390b6a1d87548b1ba3ba4b1058c7, type: 2}
+  Sounds:
+    soundsOff: {fileID: 21300000, guid: 1576c3618f407c580a82ae61707e204a, type: 3}
+    soundsOn: {fileID: 21300000, guid: 611c151fd7be6b38dbc2ea285af69330, type: 3}
+    mutedSound: 0
+    soundsVolume: 1
+  Music:
+    musicOff: {fileID: 21300000, guid: 161af26c76133ea82a29b2fcd2ff3ada, type: 3}
+    musicOn: {fileID: 21300000, guid: 5a74f1c7856a6c849b0aefbb4a4b2737, type: 3}
+    mutedMusic: 0
+    musicVolume: 1
+  Master:
+    masterVolume: 1
