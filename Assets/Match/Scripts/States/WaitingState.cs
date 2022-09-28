@@ -17,13 +17,13 @@ namespace Assets.Match.Scripts.States
         public override void Enter()
         {
             base.Enter();
-            _inputManager.OnPress.AddListener(_board.SelectTiles);
+            _inputManager.OnPress.AddListener(_board.SelectBlocks);
         }
 
         public override void Exit()
         {
             base.Exit();
-            _inputManager.OnPress.RemoveListener(_board.SelectTiles);
+            _inputManager.OnPress.RemoveListener(_board.SelectBlocks);
         }
     }
 }

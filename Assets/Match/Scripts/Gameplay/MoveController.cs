@@ -1,12 +1,27 @@
 ﻿using System;
 using UnityEngine;
 
+
 namespace Assets.Match.Scripts.Gameplay
 {
-    public class MoveController : MonoBehaviour
+    [CreateAssetMenu(fileName = "MoveController")]
+    public class MoveController : ScriptableObject
     {
-        public int TotalMove { get; set; } = 20;
+        [SerializeField] private int _maxMove;
+
+        public int TotalMove { get; private set; }
+
         public event Action MovesChange;
+
+        private void OnEnable()
+        {
+            TotalMove = _maxMove;
+        }
+
+        public void ResetMoves()
+        {
+            NumberOfMoves(_maxMove);
+        }
 
         public void NumberOfMoves(int moves)
         {
