@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2235296734035970215}
   - component: {fileID: 9219657625671414226}
-  - component: {fileID: 7945425491185948893}
   - component: {fileID: 8008618506090093307}
   - component: {fileID: 2571752534938999529}
   - component: {fileID: 3782058158158357420}
+  - component: {fileID: -1815995810227090855}
   m_Layer: 0
   m_Name: rock
   m_TagString: Untagged
@@ -91,19 +91,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7945425491185948893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8920060514387104540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6065ffde0f9cef04197237e9517a2d3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsBonus: 0
 --- !u!114 &8008618506090093307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,3 +226,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-1815995810227090855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8920060514387104540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dacda6eeb89e044baa78c0c1ed7abae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 6
+  matrix: {fileID: 11400000, guid: d4d78002932b37548bc8e30e3a4dc03b, type: 2}

@@ -1,8 +1,9 @@
-﻿using Assets.Match.Scripts.ScriptableObjects;
-using UnityEngine;
+﻿using UnityEngine;
+using Assets.Match.Scripts.ScriptableObjects;
 
 namespace Assets.Match.Scripts.UI.View
 {
+
     public class StarViewOnLevelPanel : MonoBehaviour
     {
         [SerializeField] private LevelScriptableObject _levelScriptableObject;
@@ -23,11 +24,13 @@ namespace Assets.Match.Scripts.UI.View
             {
                 totalStars[0] = Instantiate(_starPref, _starPosition[0].transform.position, Quaternion.identity, _starPosition[0].transform);          
             }
+
             if (_levelScriptableObject.totalStar == 2)
             {
                 totalStars[0] = Instantiate(_starPref, _starPosition[0].transform.position, Quaternion.identity, _starPosition[0].transform);
                 totalStars[1] = Instantiate(_starPref, _starPosition[1].transform.position, Quaternion.identity, _starPosition[1].transform);         
             }
+
             if (_levelScriptableObject.totalStar == 3)
             {
                 totalStars[0] = Instantiate(_starPref, _starPosition[0].transform.position, Quaternion.identity, _starPosition[0].transform);
@@ -35,5 +38,6 @@ namespace Assets.Match.Scripts.UI.View
                 totalStars[2] = Instantiate(_starPref, _starPosition[2].transform.position, Quaternion.identity, _starPosition[2].transform);
             }
         }
+
     }
 }

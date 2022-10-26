@@ -2,6 +2,7 @@
 
 namespace Assets.Match.Scripts.Models
 {
+
     public class Obstacles : PositionOnBoard
     {
         public ObstacleType Type;

@@ -1,9 +1,10 @@
-﻿using Assets.Match.Scripts.Gameplay;
+﻿using UnityEngine;
 using TMPro;
-using UnityEngine;
+using Assets.Match.Scripts.Gameplay;
 
 namespace Assets.Match.Scripts.UI.View
 {
+
     public class ScoreView : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _score;
@@ -13,12 +14,7 @@ namespace Assets.Match.Scripts.UI.View
         {
             _scoreController.ScoreChange += Score;
         }
-
-        private void OnDisable()
-        {
-            _scoreController.ScoreChange -= Score;
-        }
-
+  
         private void Start()
         {
             Score();
@@ -28,5 +24,11 @@ namespace Assets.Match.Scripts.UI.View
         {
             _score.text = $"Total score: {_scoreController.Counter}";
         }
+        
+        private void OnDisable()
+        {
+            _scoreController.ScoreChange -= Score;
+        }
+
     }
 }

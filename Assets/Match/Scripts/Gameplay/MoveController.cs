@@ -1,26 +1,26 @@
 ﻿using System;
 using UnityEngine;
-
+using Assets.Match.Scripts.ScriptableObjects;
 
 namespace Assets.Match.Scripts.Gameplay
 {
-    [CreateAssetMenu(fileName = "MoveController")]
-    public class MoveController : ScriptableObject
+
+    public class MoveController : MonoBehaviour
     {
-        [SerializeField] private int _maxMove;
+        [SerializeField] private MoveScriptableObjects _move;
 
         public int TotalMove { get; private set; }
 
         public event Action MovesChange;
 
-        private void OnEnable()
+        private void Awake()
         {
-            TotalMove = _maxMove;
+            TotalMove = _move.maxMove;
         }
 
         public void ResetMoves()
         {
-            NumberOfMoves(_maxMove);
+            NumberOfMoves(_move.maxMove);
         }
 
         public void NumberOfMoves(int moves)
@@ -28,5 +28,6 @@ namespace Assets.Match.Scripts.Gameplay
             TotalMove = moves;
             MovesChange?.Invoke();
         }
+
     }
 }

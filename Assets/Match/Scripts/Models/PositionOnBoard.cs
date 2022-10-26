@@ -2,10 +2,13 @@
 
 namespace Assets.Match.Scripts.Models
 {
+
     public abstract class PositionOnBoard : MonoBehaviour
     {
         private Point targetPoint;
-        #region Public Proprieties
+
+#region Public Proprieties
+
         public Point SetTarget { set { targetPoint = value; } }
 
         public Point GetTarget { get { return targetPoint; } }
@@ -18,6 +21,7 @@ namespace Assets.Match.Scripts.Models
 
         public int SetY { set { targetPoint.SetY = value; } }
 
-        #endregion
+#endregion
+
     }
 }

@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 103330469228066733}
-  - component: {fileID: -8078987541415496740}
   - component: {fileID: 4588761789480372356}
   - component: {fileID: 7385425440279699328}
   - component: {fileID: 3331981721594826243}
   - component: {fileID: 2315903522465921645}
+  - component: {fileID: 8608364752119479407}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Untagged
@@ -40,19 +40,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1.2903225, y: 1.235509}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &-8078987541415496740
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6071451326438718115}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6065ffde0f9cef04197237e9517a2d3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsBonus: 0
 --- !u!212 &4588761789480372356
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -138,7 +125,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 1
-  IsBonus: 0
 --- !u!61 &2315903522465921645
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -165,3 +151,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.2903225, y: 1.235509}
   m_EdgeRadius: 0
+--- !u!114 &8608364752119479407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6071451326438718115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dacda6eeb89e044baa78c0c1ed7abae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 5
+  matrix: {fileID: 11400000, guid: d4d78002932b37548bc8e30e3a4dc03b, type: 2}
