@@ -1,38 +1,43 @@
-﻿using Assets.Match.Scripts.Audio;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+using DG.Tweening;
+using Assets.Match.Scripts.Audio;
 using Assets.Match.Scripts.Enum;
 using Assets.Match.Scripts.InputSystemController;
 using Assets.Match.Scripts.Models;
 using Assets.Match.Scripts.ScriptableObjects;
-using Assets.Match.Scripts.States;
-using Assets.Match.Scripts.UI.Menu;
-using DG.Tweening;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
-
 
 namespace Assets.Match.Scripts.Gameplay
 {
-    public class BoardManager : StateMachine
+
+    public class BoardManager : MonoBehaviour
     {
-        #region Serialized Variables
+
+#region Serialized Variables
+
         [SerializeField] private MoveController _moveController;
-        [SerializeField] private ScoreController _scoreController;
         [SerializeField] private GameController _gameController;
         [SerializeField] private BonusController _bonusController;
-        [SerializeField] private GoalController _goalController;
-        [SerializeField] private VictoryPanel _victoryPanel;
-        [SerializeField] private GameOverPanel _gameOverPanel;
         [SerializeField] private AudioEffectsGame _audioEffectsGame;
 
-        [SerializeField] private Block[] _blocksPrefabs;
-        [SerializeField] private Obstacles[] ObstaclesPrefabs;
-        [SerializeField] private Tiles _boardTilesPrefabs;
+        [SerializeField] private BlockController[] _blocksPrefabs;
+        [SerializeField] private Obstacles[] _obstaclesPrefabs;
+        [SerializeField] private Tiles _boardTilesPrefab;
         [SerializeField] private LevelScriptableObject _levelScriptableObject;
-        #endregion
+        [SerializeField] private BoardScriptableObject _boardScriptableObject;
 
-        #region Private Variables
+#endregion
+
+        public int TotalMatch { get; set; }
+
+
+#region Private Variables
+
         private InputManager _inputManager;
+        private Camera _mainCamera;
+        private Block _currentBlock;
+        private Obstacles _currentObstacles;
 
         private const int _xSizeMin = 3;
         private const int _xSizeMax = 7;
@@ -40,40 +45,40 @@ namespace Assets.Match.Scripts.Gameplay
         private const int _ySizeMax = 11;
         
         private Vector3 _startPosition;
+        private Vector3 _cameraPosition = new Vector3(0, 0, 0);
+        private float _cameraSize = 0;
 
-        private static BoardManager _boardManager; 
-        private List<Block> _selectedBlocks = new List<Block>();        
+        private readonly List<BlockController> _selectedBlocks = new List<BlockController>();        
         private bool _isSelecting = false;
         private bool _isDrop = false;
-        #endregion
 
-        #region Static Variables
-        public static int xSize;
-        public static int ySize;
-        public static Tiles[,] tiles;
-        public static Block[,] blocks;
-        public static Obstacles[,] obstacles;
-        #endregion
+#endregion
 
-        public int TotalMatch { get; set; }       
+        private void Awake()
+        {
+            _inputManager = InputManager.Instance;
+            _mainCamera = Camera.main;           
+        }
+
+        private void OnEnable()
+        {
+            _inputManager.OnPress.AddListener(SelectBlocks);
+        }
 
         private void Start()
         {
-            _inputManager = InputManager.Instance;
-            _boardManager = GetComponent<BoardManager>();
-
             if (_levelScriptableObject.isConfigured)
             {
                 _levelScriptableObject.totalStar = 0;
 
                 if (_levelScriptableObject.xSize >= _xSizeMin && _levelScriptableObject.xSize <= _xSizeMax)
                 {
-                    xSize = _levelScriptableObject.xSize;
+                    _boardScriptableObject.XSize = _levelScriptableObject.xSize;
                 }
 
                 if (_levelScriptableObject.ySize >= _ySizeMin && _levelScriptableObject.ySize <= _ySizeMax)
                 {
-                    ySize = _levelScriptableObject.ySize;
+                    _boardScriptableObject.YSize = _levelScriptableObject.ySize;
                 }
 
                 GenerateBoard(_levelScriptableObject);
@@ -91,7 +96,7 @@ namespace Assets.Match.Scripts.Gameplay
 
         private Tiles MakeTile(Vector3 position, int xPos, int yPos)
         {
-            Tiles tile = Instantiate(_boardTilesPrefabs, position, Quaternion.identity);
+            Tiles tile = Instantiate(_boardTilesPrefab, position, Quaternion.identity);
             tile.SetTarget = new Point(xPos, yPos);
             tile.transform.SetParent(transform);
             return tile;
@@ -103,26 +108,27 @@ namespace Assets.Match.Scripts.Gameplay
 
             if(Type == ObstacleType.Rock)
             {
-                obstacles = Instantiate(ObstaclesPrefabs[0], positionTile.transform.position, Quaternion.identity);
+                obstacles = Instantiate(_obstaclesPrefabs[0], positionTile.transform.position, Quaternion.identity);               
 
             }
             else if(Type == ObstacleType.Ice)
             {
-                obstacles = Instantiate(ObstaclesPrefabs[1], positionTile.transform.position, Quaternion.identity);
+                obstacles = Instantiate(_obstaclesPrefabs[1], positionTile.transform.position, Quaternion.identity);
             }
 
+            obstacles.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             obstacles.SetTarget = new Point(positionTile.GetX, positionTile.GetY);
             positionTile.IsObstacle = true;
             obstacles.transform.SetParent(transform);
             return obstacles;
         }
 
-        public Block MakeBlock(Tiles postionTile, Block block)
+        private BlockController MakeBlock(Tiles postionTile)
         {
             int index = Random.Range(0, _blocksPrefabs.Length);
-            Block newBlock = Instantiate(_blocksPrefabs[index], postionTile.transform.position, Quaternion.identity);
+            BlockController newBlock = Instantiate(_blocksPrefabs[index], postionTile.transform.position, Quaternion.identity);
 
-            newBlock.SetTarget = new Point(postionTile.GetX, postionTile.GetY);
+            newBlock.GetComponent<BlockController>().SetTarget = new Point(postionTile.GetX, postionTile.GetY);
             newBlock.transform.SetParent(transform);
             newBlock.IsBonus = false;
 
@@ -134,9 +140,9 @@ namespace Assets.Match.Scripts.Gameplay
 
             if (_levelScriptableObject.isObstacleLevel && _levelScriptableObject.obstaclesOnLevel.position.Length > 0)
             {
-                for (int i = 0; i <= _levelScriptableObject.obstaclesOnLevel.NumberOfObstacles +1; i++)
+                for (int i = 0; i < _levelScriptableObject.obstaclesOnLevel.NumberOfObstacles; i++)
                 {
-                    tiles[_levelScriptableObject.obstaclesOnLevel.position[i].x, 
+                    _boardScriptableObject.Tiles[_levelScriptableObject.obstaclesOnLevel.position[i].x, 
                         _levelScriptableObject.obstaclesOnLevel.position[i].y].IsObstacle = true;
                 }
             }
@@ -144,28 +150,28 @@ namespace Assets.Match.Scripts.Gameplay
             if (_levelScriptableObject.isObstacleLevel && _levelScriptableObject.obstaclesOnLevel.position.Length == 0)
             {
                
-                for (int i = 0; i <= _levelScriptableObject.obstaclesOnLevel.NumberOfObstacles +1; i++)
+                for (int i = 0; i < _levelScriptableObject.obstaclesOnLevel.NumberOfObstacles; i++)
                 {
-                    int x = Random.Range(0, xSize);
-                    int y = Random.Range(0, ySize);
+                    int x = Random.Range(0, _boardScriptableObject.XSize);
+                    int y = Random.Range(0, _boardScriptableObject.YSize);
 
-                    tiles[x, y].IsObstacle = true;
+                    _boardScriptableObject.Tiles[x, y].IsObstacle = true;
                 }
             }
         }
 
         private void GenerateBoard(LevelScriptableObject level)
         {
-            tiles = new Tiles[level.xSize, level.ySize];
-            obstacles = new Obstacles[level.xSize, level.ySize];
+            _boardScriptableObject.Tiles = new Tiles[level.xSize, level.ySize];
+            _boardScriptableObject.Obstacles = new Obstacles[level.xSize, level.ySize];
 
             SearchStartPosition();
 
-            for (int x = 0; x < xSize; x++)
+            for (int x = 0; x < _boardScriptableObject.XSize; x++)
             {
-                for (int y = 0; y < ySize; y++)
+                for (int y = 0; y < _boardScriptableObject.YSize; y++)
                 {
-                    tiles[x, y] = MakeTile(new Vector3(_startPosition.x + 0.8f * x, _startPosition.y + 0.8f * y, 0), x, y);                    
+                    _boardScriptableObject.Tiles[x, y] = MakeTile(new Vector3(_startPosition.x + 0.8f * x, _startPosition.y + 0.8f * y, 0), x, y);                    
                 }
             }
 
@@ -174,26 +180,28 @@ namespace Assets.Match.Scripts.Gameplay
             AddBlocks();
 
             SetupCamera();
-            SwitchState<WaitingState>();
         }
 
         private void AddBlocks()
-        {  
-            blocks = new Block[xSize, ySize];
+        {
+            _boardScriptableObject.Blocks = new Block[_boardScriptableObject.XSize, _boardScriptableObject.YSize];
 
-            for (int x = 0; x < xSize; x++)
+            for (int x = 0; x < _boardScriptableObject.XSize; x++)
             {
-                for (int y = 0; y < ySize; y++)
+                for (int y = 0; y < _boardScriptableObject.YSize; y++)
                 {
-                    if (tiles[x, y] != null && tiles[x, y].IsObstacle != true)
-                        blocks[x, y] = MakeBlock(tiles[x, y], _blocksPrefabs[Random.Range(0, _blocksPrefabs.Length)]);
+                    if (_boardScriptableObject.Tiles[x, y] != null && _boardScriptableObject.Tiles[x, y].IsObstacle != true)
+                        _currentBlock = MakeBlock(_boardScriptableObject.Tiles[x, y]);
                     else
                     {
-                        obstacles[x, y] = MakeObstacle(tiles[x, y], _levelScriptableObject.obstaclesOnLevel.type);
-                        blocks[x, y] = obstacles[x, y].GetComponent<Block>();
-                        blocks[x, y].SetTarget = new Point(obstacles[x, y].GetX, obstacles[x,y].GetY);
+                        _currentObstacles = MakeObstacle(_boardScriptableObject.Tiles[x, y], 
+                                            _levelScriptableObject.obstaclesOnLevel.type);
+                        _currentBlock = _currentObstacles.GetComponent<Block>();
+                        _currentBlock.GetComponent<BlockController>().SetTarget = new Point(_currentObstacles.GetX,
+                                            _currentObstacles.GetY);
                     }
-
+                    _boardScriptableObject.Blocks[x, y] = _currentBlock;
+                    _boardScriptableObject.Obstacles[x, y] = _currentObstacles;
                 }
             }
         }
@@ -216,8 +224,8 @@ namespace Assets.Match.Scripts.Gameplay
             RaycastHit2D hit = Physics2D.Raycast(location, Vector2.zero);
             if (hit)
             {
-                Block hitBlock = hit.collider.gameObject.GetComponent<Block>();
-                Block selectedBlock = _selectedBlocks.Find(block => block == hitBlock);
+                BlockController hitBlock = hit.collider.gameObject.GetComponent<BlockController>();
+                BlockController selectedBlock = _selectedBlocks.Find(block => block == hitBlock);
                 if (selectedBlock == null && _isDrop == false)
                 {
                     if (_selectedBlocks.Count == 0 || _selectedBlocks[_selectedBlocks.Count - 1].TryToMatchWithRenderer(hitBlock))
@@ -249,19 +257,18 @@ namespace Assets.Match.Scripts.Gameplay
 
             if(TotalMatch == 1 && _levelScriptableObject.isBonusLevel == true)
             {
-                foreach (Block matchedTile in _selectedBlocks)
+                foreach (BlockController matchedTile in _selectedBlocks)
                 {
-                    _bonusController.BonusValidation(matchedTile, blocks);
+                    _bonusController.BonusValidation(matchedTile, _boardScriptableObject.Blocks);
                 }
                 ClearSelectedTiles();
             }
             else if (TotalMatch >= 3)
             {
                 _gameController.CountingScore(TotalMatch);
-                SwitchState<TileDropState>();
                 _selectedBlocks.Sort((p1, p2) => p1.GetY.CompareTo(p2.GetY));
 
-                foreach (Block matchedTile in _selectedBlocks)
+                foreach (BlockController matchedTile in _selectedBlocks)
                 {
                     _gameController.MatchWithGoal(matchedTile);
 
@@ -285,79 +292,96 @@ namespace Assets.Match.Scripts.Gameplay
             {
                 _bonusController.GetBonus(TotalMatch);
             }
-            
+
+            _isDrop = false;
+
             TotalMatch = 0;
-            SwitchState<WaitingState>();
         }
   
-        public async void SearchEmptyTile()
+        private async void SearchEmptyTile()
         {
-            await Task.Delay(100);
-            for (int x = 0; x < xSize; x++)
+            try
             {
-                for (int y = ySize - 1; y > -1; y--)
+                await Task.Delay(100);
+                for (int x = 0; x < _boardScriptableObject.XSize; x++)
                 {
-                    if (blocks[x, y] == null)
-                    {   
-                        _isDrop = true;
-                        DropBlocks();
-                        _isDrop = false;
+                    for (int y = _boardScriptableObject.YSize - 1; y > -1; y--)
+                    {
+                         _currentBlock = _boardScriptableObject.Blocks[x, y];
+                        if (_currentBlock == null)
+                        {
+                            _isDrop = true;
+                            DropBlocks();
+                        }
+                        
                     }
                 }
-            }
-            await Task.Delay(150);
 
-            for (int x = 0; x < xSize; x++)
-            {
-                for (int y = 0; y < ySize; y++)
+                await Task.Delay(100);
+
+                for (int x = 0; x < _boardScriptableObject.XSize; x++)
                 {
-                    if (blocks[x, y] != null)
-                        continue;
+                    for (int y = 0; y < _boardScriptableObject.YSize; y++)
+                    {
+                        _currentBlock = _boardScriptableObject.Blocks[x, y];
+                        if (_currentBlock != null)
+                            continue;
 
-                    blocks[x, y] = MakeBlock(tiles[x, y], _blocksPrefabs[Random.Range(0, _blocksPrefabs.Length)]);
-                    blocks[x, y].transform.localScale = Vector3.zero;
-                    blocks[x, y].transform.DOScale(0.5f, 0.2f);
+                        _currentBlock = MakeBlock(_boardScriptableObject.Tiles[x, y]);
+                        _currentBlock.transform.localScale = Vector3.zero;
+                        _currentBlock.transform.DOScale(0.5f, 0.2f);
+                        _boardScriptableObject.Blocks[x, y] = _currentBlock;
+                    }
                 }
+
             }
-        }       
+            catch (System.Exception exception)
+            {
+                Debug.LogError(exception.Message);
+                throw;
+            }
+            
+        }
 
         private void DropBlocks()
         {
-            int yBelow = 0;
-            for (int x = 0; x < xSize; x++)
+            int yBelow;
+            for (int x = 0; x < _boardScriptableObject.XSize; x++)
             {
-                for (int y = 0; y < ySize; y++)
+                for (int y = 0; y < _boardScriptableObject.YSize; y++)
                 {
-                    if (blocks[x, y] == null || blocks[x, y].GetY <= 0 || blocks[x, y - 1] != null)
-                        continue;
+                    _currentBlock = _boardScriptableObject.Blocks[x, y];
+                    _currentObstacles = _boardScriptableObject.Obstacles[x, y];
 
-                    if (obstacles[x, y] != null && obstacles[x, y].Type == ObstacleType.Ice)
+                    if (_currentBlock == null || _currentBlock.GetComponent<BlockController>().GetY <= 0 || 
+                        _boardScriptableObject.Blocks[x, y - 1] != null)
                         continue;
-
-                    if (obstacles[x, y - 1] != null && obstacles[x, y - 1].Type == ObstacleType.Ice)
+                    if (_currentObstacles != null && _currentObstacles.Type == ObstacleType.Ice)
+                        continue;
+                    if (_boardScriptableObject.Obstacles[x, y - 1] != null && _boardScriptableObject.Obstacles[x, y - 1].Type == ObstacleType.Ice)
                         continue;
 
                     yBelow = y - 1;
                     while (y > 0)
                     {
-                        if (blocks[x, yBelow] == null)
+                        if (_boardScriptableObject.Blocks[x, yBelow] == null)
                         {
                             if (yBelow == 0)
                             {
-                                if (obstacles[x, y] != null && obstacles[x, y].Type == ObstacleType.Rock)
+                                if (_currentObstacles != null && _currentObstacles.Type == ObstacleType.Rock)
                                 {
-                                    obstacles[x, y].transform.DOMove(tiles[x, yBelow].transform.position, 0.5f);
-                                    obstacles[x, y].SetY = yBelow;
-                                    obstacles[x, yBelow] = obstacles[x, y];
-                                    obstacles[x, y] = null;
-                                    tiles[x, y].IsObstacle = false;
-                                    tiles[x, yBelow].IsObstacle = true;
+                                    _currentObstacles.transform.DOMove(_boardScriptableObject.Tiles[x, yBelow].transform.position, 0.5f);
+                                    _currentObstacles.SetY = yBelow;
+                                    _boardScriptableObject.Obstacles[x, yBelow] = _currentObstacles;
+                                    _boardScriptableObject.Obstacles[x, y] = null;
+                                    _boardScriptableObject.Tiles[x, y].IsObstacle = false;
+                                    _boardScriptableObject.Tiles[x, yBelow].IsObstacle = true;
                                 }
 
-                                blocks[x, y].transform.DOMove(tiles[x, yBelow].transform.position, 0.5f);
-                                blocks[x, y].SetY = yBelow;
-                                blocks[x, yBelow] = blocks[x, y];
-                                blocks[x, y] = null;
+                                _currentBlock.transform.DOMove(_boardScriptableObject.Tiles[x, yBelow].transform.position, 0.5f);
+                                _currentBlock.GetComponent<BlockController>().SetY = yBelow;
+                                _boardScriptableObject.Blocks[x, yBelow] = _currentBlock;
+                                _boardScriptableObject.Blocks[x, y] = null;
                                 break;
                             }
 
@@ -365,20 +389,21 @@ namespace Assets.Match.Scripts.Gameplay
                         }
                         else
                         {
-                            if (obstacles[x, y] != null && obstacles[x, y].Type == ObstacleType.Rock)
+                            if (_currentObstacles != null && _currentObstacles.Type == ObstacleType.Rock)
                             {
-                                obstacles[x, y].transform.DOMove(tiles[x, yBelow + 1].transform.position, 0.5f);
-                                obstacles[x, y].SetY = yBelow + 1;
-                                obstacles[x, yBelow + 1] = obstacles[x, y];
-                                obstacles[x, y] = null;
-                                tiles[x, y].IsObstacle = false;
-                                tiles[x, yBelow + 1].IsObstacle = true;
+                                _currentObstacles.transform.DOMove(_boardScriptableObject.Tiles[x, yBelow + 1].transform.position, 0.5f);
+                                _currentObstacles.SetY = yBelow + 1;
+                                _boardScriptableObject.Obstacles[x, yBelow + 1] = _currentObstacles;
+                                _boardScriptableObject.Obstacles[x, y] = null;
+                                _boardScriptableObject.Tiles[x, y].IsObstacle = false;
+                                _boardScriptableObject.Tiles[x, yBelow + 1].IsObstacle = true;
                             }
 
-                            blocks[x, y].transform.DOMove(tiles[x, yBelow + 1].transform.position, 0.5f);
-                            blocks[x, y].SetY = yBelow + 1;
-                            blocks[x, yBelow + 1] = blocks[x, y];
-                            blocks[x, y] = null;
+                            _currentBlock.transform.DOMove(_boardScriptableObject.Tiles[x, yBelow + 1].transform.position, 0.5f);
+                            _currentBlock.GetComponent<BlockController>().SetY = yBelow + 1;
+                            _boardScriptableObject.Blocks[x, yBelow + 1] = _currentBlock;
+                            _boardScriptableObject.Blocks[x, y] = null;
+                            
                             break;
                         }
                     }
@@ -389,62 +414,75 @@ namespace Assets.Match.Scripts.Gameplay
   
         private void ClearSelectedTiles()
         {
-            foreach (Block tile in _selectedBlocks)
+            foreach (BlockController tile in _selectedBlocks)
             {
                 tile.Unselect();
             }
             _selectedBlocks.Clear();
         }
-        
-        public void DestroyBlock(Block block)
-        {
-            Destroy(block.gameObject);
-        }
 
         public void UpdateBoard()
         {
-            for (var i = 0; i < xSize; i++)
+            for (var x = 0; x < _boardScriptableObject.XSize; x++)
             {
-                for (var j = 0; j < ySize; j++)
+                for (var y = 0; y < _boardScriptableObject.YSize; y++)
                 {
-                    if (obstacles[i, j] != null)
+                    _currentObstacles = _boardScriptableObject.Obstacles[x, y];
+                    _currentBlock = _boardScriptableObject.Blocks[x, y];
+                    if (_currentObstacles != null)
                         continue;
 
-                    DestroyBlock(blocks[i, j]);
-                    blocks[i, j] = MakeBlock(tiles[i, j], _blocksPrefabs[Random.Range(0, _blocksPrefabs.Length)]);
+                    DestroyBlock(_currentBlock);
+                    _currentBlock = MakeBlock(_boardScriptableObject.Tiles[x, y]);
+                    _boardScriptableObject.Blocks[x, y] = _currentBlock;
                 }
             }
         }
 
+        public void DestroyBlock(Block block)
+        {
+            Destroy(block.gameObject);
+        }
+        
         public void SearchStartPosition()
         {
-            _startPosition = new Vector3(-(xSize / 2) + 0.1f, -(ySize / 2), 0);
+            _startPosition = new Vector3(-(_boardScriptableObject.XSize / 2) + 0.1f, -(_boardScriptableObject.YSize / 2), 0);
         }
 
         public void SetupCamera()
         {
-            switch (xSize)
+            switch (_boardScriptableObject.XSize)
             {
-                case 3:
-                Camera.main.orthographicSize = 3;
+                case 3:                
+                    _cameraSize = 3;
                     break;
                 case 4:
-                    Camera.main.orthographicSize = 4.5f;
-                    Camera.main.transform.position = new Vector3(-0.65f, -0.5f, -1);
+                    _cameraSize = 4.5f;
+                    _cameraPosition = new Vector3(-0.65f, -0.5f, -1);
                     break;
                 case 5:
-                    Camera.main.orthographicSize = 5f;
-                    Camera.main.transform.position = new Vector3(-0.35f, -0.5f, -1);
+                    _cameraSize = 5f;
+                    _cameraPosition = new Vector3(-0.35f, -0.5f, -1);
                     break;
                 case 6:
-                    Camera.main.orthographicSize = 5.5f;
-                    Camera.main.transform.position = new Vector3(-0.85f, -0.5f, -1);
+                    _cameraSize = 5.5f;
+                    _cameraPosition = new Vector3(-0.85f, -0.5f, -1);
                     break;
                 case 7:
-                    Camera.main.orthographicSize = 6f;
-                    Camera.main.transform.position = new Vector3(-0.55f, -0.5f, -1);
+                    _cameraSize = 6f;
+                    _cameraPosition = new Vector3(-0.55f, -0.5f, -1);
                     break;
             }
+
+            _mainCamera.transform.position = _cameraPosition;
+            _mainCamera.orthographicSize = _cameraSize;
+
         }
+
+        private void OnDisable()
+        {
+            _inputManager.OnPress.RemoveListener(SelectBlocks);
+        }
+
     }
 }

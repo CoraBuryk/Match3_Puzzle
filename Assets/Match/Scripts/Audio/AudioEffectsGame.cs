@@ -2,9 +2,12 @@ using UnityEngine;
 
 namespace Assets.Match.Scripts.Audio
 {
+
     public class AudioEffectsGame : MonoBehaviour
     {
-        #region Serialized Variables
+
+#region Serialized Variables
+
         [SerializeField] private AudioSource _dropSound;
         [SerializeField] private AudioSource _loseSound;
         [SerializeField] private AudioSource _victorySound;
@@ -12,7 +15,8 @@ namespace Assets.Match.Scripts.Audio
         [SerializeField] private AudioSource _bombSound;
         [SerializeField] private AudioSource _rocketSound;
         [SerializeField] private AudioSource _bonusSound;
-        #endregion
+
+#endregion
 
         public void PlayDropSound()
         {
@@ -48,5 +52,6 @@ namespace Assets.Match.Scripts.Audio
         {
             _bonusSound.Play();
         }
+
     }
 }

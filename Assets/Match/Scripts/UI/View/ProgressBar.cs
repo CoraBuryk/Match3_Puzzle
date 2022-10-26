@@ -1,25 +1,26 @@
+using UnityEngine;
+using UnityEngine.UI;
 using Assets.Match.Scripts.Audio;
 using Assets.Match.Scripts.Gameplay;
 using Assets.Match.Scripts.ScriptableObjects;
 using Assets.Match.Scripts.UI.Menu;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Match.Scripts.UI.View
 {
+
     public class ProgressBar : MonoBehaviour
     {
-        #region Serialized Variables
+
+#region Serialized Variables
+
         [SerializeField] private LevelScriptableObject _levelScriptableObject;
         [SerializeField] private Image _mask;
         [SerializeField] private ScoreController _scoreController;
         [SerializeField] private StarController _starController;
-        [SerializeField] private AudioEffectsGame _audioEffectsGame;
         [SerializeField] private GameObject _starParticle;
         [SerializeField] private RectTransform[] _starsTransfom;
-        [SerializeField] private VictoryPanel _victoryPanel;
-        [SerializeField] private GameOverPanel _gameOverPanel;
-        #endregion
+
+#endregion
 
         public float fillAmount;
 
@@ -33,11 +34,6 @@ namespace Assets.Match.Scripts.UI.View
             _scoreController.ScoreChange += GetCurrentFill;
         }
 
-        private void OnDisable()
-        {
-            _scoreController.ScoreChange -= GetCurrentFill;
-        }
-
         private void GetCurrentFill()
         {
             fillAmount = (float)_scoreController.Counter / (float)_levelScriptableObject.maxScore;         
@@ -48,7 +44,7 @@ namespace Assets.Match.Scripts.UI.View
 
         private void CheckForStar()
         {
-            GameObject particle = null;
+            GameObject particle;
             
             if (fillAmount >= 0.3f && fillAmount < 0.6f && _starController.NumOfStar == 0 )
             { 
@@ -69,5 +65,11 @@ namespace Assets.Match.Scripts.UI.View
                 Destroy(particle, 3f);
             }
         }
+
+        private void OnDisable()
+        {
+            _scoreController.ScoreChange -= GetCurrentFill;
+        }
+
     }
 }

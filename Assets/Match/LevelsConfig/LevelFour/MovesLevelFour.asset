@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d417b1f5ce2d1bc4fbcd86ad15ea17f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a64e3c02455a0f45af1c3d61a67d3e9, type: 3}
   m_Name: MovesLevelFour
   m_EditorClassIdentifier: 
-  _maxMove: 25
+  maxMove: 25

@@ -2,6 +2,7 @@
 
 namespace Assets.Match.Scripts.InputSystemController
 {
+
     public class Utils : MonoBehaviour
     {
         public static Vector3 ScreenToWorld(Camera camera, Vector3 position)
@@ -9,5 +10,6 @@ namespace Assets.Match.Scripts.InputSystemController
             position.z = camera.nearClipPlane;
             return camera.ScreenToWorldPoint(position);
         }
+
     }
 }

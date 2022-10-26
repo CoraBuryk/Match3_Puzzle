@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Assets.Match.Scripts.Audio
 {
+
     public class ButtonAudioEffect : MonoBehaviour
     {
         [SerializeField] private AudioSource _buttonClick;
@@ -10,5 +11,6 @@ namespace Assets.Match.Scripts.Audio
         {
             _buttonClick.Play();
         }
+
     }
 }

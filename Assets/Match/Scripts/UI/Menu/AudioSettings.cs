@@ -1,24 +1,24 @@
-﻿using Assets.Match.Scripts.Audio;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using Assets.Match.Scripts.Audio;
+using Assets.Match.Scripts.ScriptableObjects;
 
 namespace Assets.Match.Scripts.UI.Menu
 {
+
     public class AudioSettings : MonoBehaviour
     {
-        #region Serialized Variables
-        [SerializeField] private AudioController _audioController;
+
+#region Serialized Variables
+
+        [SerializeField] private AudioScriptableObject _audioController;
         [SerializeField] private ButtonAudioEffect _buttonClickEffect;
 
         [SerializeField] private Slider _volumeSlider;
         [SerializeField] private Button _muteMusicButton;
         [SerializeField] private Button _muteSoundsButton;
-        #endregion
 
-        private void Start()
-        {
-            LoadAudio();
-        }
+#endregion
 
         private void OnEnable()
         {
@@ -27,13 +27,10 @@ namespace Assets.Match.Scripts.UI.Menu
             _volumeSlider.onValueChanged.AddListener(ChangeMasterVolume);
         }
 
-        private void OnDisable()
+        private void Start()
         {
-            _muteMusicButton.onClick.RemoveListener(MuteMusic);
-            _muteSoundsButton.onClick.RemoveListener(MuteSounds);
-            _volumeSlider.onValueChanged.RemoveListener(ChangeMasterVolume);
+            LoadAudio();
         }
-
 
         private void MuteSounds()
         {
@@ -117,5 +114,13 @@ namespace Assets.Match.Scripts.UI.Menu
         {
             return Mathf.Log10(Mathf.Max(_value, 0.0001f)) * 40f;
         }
+
+        private void OnDisable()
+        {
+            _muteMusicButton.onClick.RemoveListener(MuteMusic);
+            _muteSoundsButton.onClick.RemoveListener(MuteSounds);
+            _volumeSlider.onValueChanged.RemoveListener(ChangeMasterVolume);
+        }
+
     }
 }

@@ -1,12 +1,15 @@
-using Assets.Match.Scripts.Gameplay;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Match.Scripts.Gameplay;
 
 namespace Assets.Match.Scripts.UI.Menu
 {
+
     public class SceenBehavior : MonoBehaviour
     {
-        #region Serialized Variables
+
+#region Serialized Variables
+
         [SerializeField] private Button _pauseButton;
         [SerializeField] private PausePanel _pausePanel;
         [SerializeField] private MoveController _moveController;
@@ -14,7 +17,8 @@ namespace Assets.Match.Scripts.UI.Menu
         [SerializeField] private GoalController _goalController;
         [SerializeField] private VictoryPanel _victoryPanel;
         [SerializeField] private GameController _gameController;
-        #endregion
+
+#endregion
 
         private void OnEnable()
         {
@@ -23,16 +27,9 @@ namespace Assets.Match.Scripts.UI.Menu
             _goalController.GoalChange += GoalReached;
         }
 
-        private void OnDisable()
-        {
-            _pauseButton.onClick.RemoveListener(_pausePanel.PauseGame);
-            _moveController.MovesChange -= GameOver;
-            _goalController.GoalChange -= GoalReached;
-        }
-
         public void GameOver()
         {
-            if (_moveController.TotalMove < 0)
+            if (_moveController.TotalMove <= 0)
             {
                 _gameOverPanel.GameOverState();
             }
@@ -47,5 +44,13 @@ namespace Assets.Match.Scripts.UI.Menu
                 _victoryPanel.VictoryState();
             }
         }
+
+        private void OnDisable()
+        {
+            _pauseButton.onClick.RemoveListener(_pausePanel.PauseGame);
+            _moveController.MovesChange -= GameOver;
+            _goalController.GoalChange -= GoalReached;
+        }
+
     }
 }

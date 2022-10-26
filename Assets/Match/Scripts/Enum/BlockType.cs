@@ -1,5 +1,6 @@
 ﻿namespace Assets.Match.Scripts.Enum
 {
+
     public enum BlockType
     {
         Red,

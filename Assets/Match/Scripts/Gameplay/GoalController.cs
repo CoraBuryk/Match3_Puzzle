@@ -1,33 +1,34 @@
 ﻿using System;
 using UnityEngine;
+using Assets.Match.Scripts.ScriptableObjects;
 
 namespace Assets.Match.Scripts.Gameplay
 {
-    [CreateAssetMenu(fileName = "GoalsController")]
-    public class GoalController : ScriptableObject
-    {
-        [SerializeField] private int _valueOfGoalOne;
-        [SerializeField] private int _valueOfGoalTwo;
-        [SerializeField] private int _valueOfGoalThree;
 
-        public int CounterOne {get; set;}
-        public int CounterTwo {get; set;}
-        public int CounterThree {get; set;}
+    public class GoalController : MonoBehaviour
+    {
+        [SerializeField] private GoalScriptableObject _goal;
+
+        public int CounterOne {get; private set;}
+
+        public int CounterTwo {get; private set;}
+
+        public int CounterThree {get; private set;}
 
         public event Action GoalChange;
 
-        private void OnEnable()
+        private void Awake()
         {
-            CounterOne = _valueOfGoalOne;
-            CounterTwo = _valueOfGoalTwo;
-            CounterThree = _valueOfGoalThree;
+            CounterOne = _goal.valueOfGoalOne;
+            CounterTwo = _goal.valueOfGoalTwo;
+            CounterThree = _goal.valueOfGoalThree;
         }
 
         public void ResetGoals()
         {
-            ChangeGoalOne(_valueOfGoalOne);
-            ChangeGoalTwo(_valueOfGoalTwo);
-            ChangeGoalThree(_valueOfGoalThree);
+            ChangeGoalOne(_goal.valueOfGoalOne);
+            ChangeGoalTwo(_goal.valueOfGoalTwo);
+            ChangeGoalThree(_goal.valueOfGoalThree);
         }
 
         public void ChangeGoalOne(int newGoal)
@@ -47,5 +48,6 @@ namespace Assets.Match.Scripts.Gameplay
             CounterThree = newGoal;
             GoalChange?.Invoke();
         }
+
     }
 }

@@ -101,7 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 283d758dddcb912489ebd22a6c1c4d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsObstacle: 0
 --- !u!114 &6104475405129459583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,4 +113,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6065ffde0f9cef04197237e9517a2d3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsBonus: 0
+  Type: 6

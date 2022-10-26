@@ -2,10 +2,12 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Assets.Match.Scripts.Audio
+namespace Assets.Match.Scripts.ScriptableObjects
 {
+
     [CreateAssetMenu(fileName = "Audio")]
-    public class AudioController : ScriptableObject
+
+    public class AudioScriptableObject : ScriptableObject
     {
         public AudioMixerGroup masterGroup;
 
@@ -36,5 +38,6 @@ namespace Assets.Match.Scripts.Audio
         {
             [Range(0.001f, 1f)] public float masterVolume;
         }
+
     }
 }

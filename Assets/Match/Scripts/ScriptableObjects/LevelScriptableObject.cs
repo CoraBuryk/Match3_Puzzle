@@ -1,10 +1,12 @@
-using Assets.Match.Scripts.Enum;
 using System;
 using UnityEngine;
+using Assets.Match.Scripts.Enum;
 
 namespace Assets.Match.Scripts.ScriptableObjects
 {
+
     [CreateAssetMenu(fileName = "Level")]
+
     public class LevelScriptableObject : ScriptableObject
     {
         public bool isConfigured;
@@ -29,5 +31,6 @@ namespace Assets.Match.Scripts.ScriptableObjects
 
             public Vector3Int[] position;
         }
+
     }
 }

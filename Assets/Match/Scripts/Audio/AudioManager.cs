@@ -1,26 +1,27 @@
 using UnityEngine;
+using Assets.Match.Scripts.InputSystemController;
+using Assets.Match.Scripts.ScriptableObjects;
 
 namespace Assets.Match.Scripts.Audio
 {
-    public class AudioManager : MonoBehaviour
+
+    public class AudioManager : SingletonPersistent<AudioManager>
     {
-        public static AudioManager Instance
-        {
-            get { return _instance; }
-        }
+        [SerializeField] private AudioScriptableObject _audioController;
+        private AudioSource _backgroundAudio;
 
-        private static AudioManager _instance = null;
-
-        private void Awake()
+        public override void Awake()
         {
-            if (_instance)
+            base.Awake();
+            _backgroundAudio = GetComponent<AudioSource>();
+
+            if(_backgroundAudio.enabled)
             {
-                DestroyImmediate(gameObject);
-                return;
+                _backgroundAudio.Play();
+                _audioController.Master.masterVolume = _backgroundAudio.volume;
             }
-            _instance = this;
-
-            DontDestroyOnLoad(gameObject);
+            
         }
+
     }
 }

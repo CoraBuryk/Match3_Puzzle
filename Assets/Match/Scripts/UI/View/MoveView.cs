@@ -1,9 +1,10 @@
-﻿using Assets.Match.Scripts.Gameplay;
+﻿using UnityEngine;
 using TMPro;
-using UnityEngine;
+using Assets.Match.Scripts.Gameplay;
 
 namespace Assets.Match.Scripts.UI.View
 {
+
     public class MoveView : MonoBehaviour       
     {
         [SerializeField] private TextMeshProUGUI _move;
@@ -14,11 +15,6 @@ namespace Assets.Match.Scripts.UI.View
             _moveController.MovesChange += MovementView;
         }
 
-        private void OnDisable()
-        {
-            _moveController.MovesChange -= MovementView;
-        }
-
         private void Start()
         {
             MovementView();
@@ -26,15 +22,20 @@ namespace Assets.Match.Scripts.UI.View
 
         public void MovementView()
         {
-            if(_moveController.TotalMove >= 0)
+            if(_moveController.TotalMove > 0)
             {
                 _move.text = $"Move: {_moveController.TotalMove}";  
             }
             else
             {
                 _move.text = " ";
-            }
-         
+            }     
         }
+
+        private void OnDisable()
+        {
+            _moveController.MovesChange -= MovementView;
+        }
+
     }
 }

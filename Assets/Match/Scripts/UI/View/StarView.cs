@@ -1,29 +1,28 @@
-﻿using Assets.Match.Scripts.Gameplay;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using Assets.Match.Scripts.Gameplay;
 
 namespace Assets.Match.Scripts.UI.View
 {
+
     public class StarView : MonoBehaviour
     {
-        #region Serialized Variables
+
+#region Serialized Variables
+
         [SerializeField] private Image[] _stars;
         [SerializeField] private Sprite _fullStar;
         [SerializeField] private Sprite _emptyStar;
 
         [SerializeField] private StarController _starController;
-        #endregion
+
+#endregion
 
         private void OnEnable()
         {
             _starController.StarChange += NumberOfStars;
         }
-
-        private void OnDisable()
-        {
-            _starController.StarChange -= NumberOfStars;
-        }
-
+       
         private void Start()
         {
             NumberOfStars();
@@ -43,5 +42,11 @@ namespace Assets.Match.Scripts.UI.View
                 }
             }
         }
+
+        private void OnDisable()
+        {
+            _starController.StarChange -= NumberOfStars;
+        }
+
     }
 }
