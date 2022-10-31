@@ -1,9 +1,9 @@
 {
     "m_SelectedDeviceId": "R58M44VXSEM",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "R58M44VXSEM",
+        "name": "com.DefaultCompany.com.Match3_Puzzle",
+        "processId": 25356,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -36,6 +36,12 @@
             "deviceId": "R58M44VXSEM",
             "name": "com.samsung.android.incallui",
             "processId": 29846,
+            "exited": false
+        },
+        {
+            "deviceId": "R58M44VXSEM",
+            "name": "com.DefaultCompany.com.Match3_Puzzle",
+            "processId": 25356,
             "exited": false
         }
     ],

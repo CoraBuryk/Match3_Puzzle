@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a64e3c02455a0f45af1c3d61a67d3e9, type: 3}
   m_Name: MovesLevelOne
   m_EditorClassIdentifier: 
-  maxMove: 5
+  maxMove: 20
