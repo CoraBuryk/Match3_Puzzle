@@ -26,26 +26,26 @@ namespace Assets.Match.Scripts.Gameplay
 
         public void ResetGoals()
         {
-            ChangeGoalOne(_goal.valueOfGoalOne);
-            ChangeGoalTwo(_goal.valueOfGoalTwo);
-            ChangeGoalThree(_goal.valueOfGoalThree);
+            ChangeGoals(_goal.valueOfGoalOne, 1);
+            ChangeGoals(_goal.valueOfGoalTwo, 2);
+            ChangeGoals(_goal.valueOfGoalThree, 3);
         }
 
-        public void ChangeGoalOne(int newGoal)
+        public void ChangeGoals(int newGoal, int counter)
         {
-            CounterOne = newGoal;
-            GoalChange?.Invoke();
-        }
+            if(counter == 1)
+            {
+                CounterOne = newGoal;          
+            }
+            if (counter == 2)
+            {
+                CounterTwo = newGoal;
+            }
+            if (counter == 3)
+            {
+                CounterThree = newGoal;
+            }
 
-        public void ChangeGoalTwo(int newGoal)
-        {
-            CounterTwo = newGoal;
-            GoalChange?.Invoke();
-        }
-
-        public void ChangeGoalThree(int newGoal)
-        {
-            CounterThree = newGoal;
             GoalChange?.Invoke();
         }
 
