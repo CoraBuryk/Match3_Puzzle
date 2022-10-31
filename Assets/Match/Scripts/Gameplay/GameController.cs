@@ -73,17 +73,17 @@ namespace Assets.Match.Scripts.Gameplay
         {
             if (block.Type == _goalView.goals[0].GetComponent<BlockController>().Type)
             {
-                _goalController.ChangeGoalOne(_goalController.CounterOne - 1);
+                _goalController.ChangeGoals(_goalController.CounterOne - 1, 1);
             }
 
             if (block.Type == _goalView.goals[1].GetComponent<BlockController>().Type)
             {
-                _goalController.ChangeGoalTwo(_goalController.CounterTwo - 1);
+                _goalController.ChangeGoals(_goalController.CounterTwo - 1, 2);
             }
 
             if (block.Type == _goalView.goals[2].GetComponent<BlockController>().Type)
             {
-                _goalController.ChangeGoalThree(_goalController.CounterThree - 1);
+                _goalController.ChangeGoals(_goalController.CounterThree - 1, 3);
             }
 
             CheckNumberOfGoals();

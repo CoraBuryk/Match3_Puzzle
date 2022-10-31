@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Assets.Match.Scripts.Ads;
 using Assets.Match.Scripts.Audio;
 using Assets.Match.Scripts.Gameplay;
 using Assets.Match.Scripts.UI.Animations;
@@ -22,6 +23,7 @@ namespace Assets.Match.Scripts.UI.Menu
         [SerializeField] private ButtonAudioEffect _buttonAudioEffect;
         [SerializeField] private AudioEffectsGame _audioEffectsGame;
         [SerializeField] private BoardManager _boardManager;
+        [SerializeField] private RewardedAds _rewardedAds;
 
 #endregion
 
@@ -39,16 +41,23 @@ namespace Assets.Match.Scripts.UI.Menu
             IsOverState = false;
             _boardManager.UpdateBoard();
             _buttonAudioEffect.PlayClickSound();
-            //_board.SetActive(!_isOpen);
-            //_goalPanel.SetActive(!_isOpen);
             _gameMenuAnimation.ForRestartAndContinue();
             _gameController.Restart();
+            _rewardedAds.LoadAd();
         }
 
-        private void ToStartMenu()
+        private async void ToStartMenu()
         {
-            _buttonAudioEffect.PlayClickSound();
-            SceneManager.LoadScene(0, LoadSceneMode.Single);
+            try
+            {
+                _buttonAudioEffect.PlayClickSound();
+                await Task.Delay(200);
+                SceneManager.LoadScene(0, LoadSceneMode.Single);
+            }
+            catch (System.Exception exception)
+            {
+                Debug.LogError(exception.Message);
+            }
         }
 
         public async void GameOverState()
@@ -57,17 +66,14 @@ namespace Assets.Match.Scripts.UI.Menu
             {
                 IsOverState = true;
                 _starController.ResetStar();
-                await Task.Delay(800);
+                await Task.Delay(600);
                 _audioEffectsGame.PlayLoseSound();
                 _gameMenuAnimation.ForGameOver();
-                //_board.SetActive(_isOpen);
-                //_goalPanel.SetActive(_isOpen);
             }
             catch (System.Exception exception)
             {
                 Debug.LogError(exception.Message);
-                throw;
-            }           
+            }
         }
 
         private void OnDisable()

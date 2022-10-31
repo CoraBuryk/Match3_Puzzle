@@ -126,8 +126,8 @@ namespace Assets.Match.Scripts.Gameplay
         private BlockController MakeBlock(Tiles postionTile)
         {
             int index = Random.Range(0, _blocksPrefabs.Length);
-            BlockController newBlock = Instantiate(_blocksPrefabs[index], postionTile.transform.position, Quaternion.identity);
 
+            BlockController newBlock = Instantiate(_blocksPrefabs[index], postionTile.transform.position, Quaternion.identity);
             newBlock.GetComponent<BlockController>().SetTarget = new Point(postionTile.GetX, postionTile.GetY);
             newBlock.transform.SetParent(transform);
             newBlock.IsBonus = false;
@@ -297,8 +297,8 @@ namespace Assets.Match.Scripts.Gameplay
 
             TotalMatch = 0;
         }
-  
-        private async void SearchEmptyTile()
+
+        public async void SearchEmptyTile()
         {
             try
             {
@@ -307,13 +307,13 @@ namespace Assets.Match.Scripts.Gameplay
                 {
                     for (int y = _boardScriptableObject.YSize - 1; y > -1; y--)
                     {
-                         _currentBlock = _boardScriptableObject.Blocks[x, y];
+                        _currentBlock = _boardScriptableObject.Blocks[x, y];
                         if (_currentBlock == null)
                         {
                             _isDrop = true;
                             DropBlocks();
                         }
-                        
+
                     }
                 }
 
@@ -331,21 +331,21 @@ namespace Assets.Match.Scripts.Gameplay
                         _currentBlock.transform.localScale = Vector3.zero;
                         _currentBlock.transform.DOScale(0.5f, 0.2f);
                         _boardScriptableObject.Blocks[x, y] = _currentBlock;
+
                     }
                 }
-
             }
             catch (System.Exception exception)
             {
                 Debug.LogError(exception.Message);
-                throw;
             }
-            
+
         }
 
         private void DropBlocks()
         {
             int yBelow;
+
             for (int x = 0; x < _boardScriptableObject.XSize; x++)
             {
                 for (int y = 0; y < _boardScriptableObject.YSize; y++)

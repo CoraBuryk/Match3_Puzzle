@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Assets.Match.Scripts.Ads;
 using Assets.Match.Scripts.Audio;
 using Assets.Match.Scripts.UI.Animations;
 
@@ -12,58 +13,37 @@ namespace Assets.Match.Scripts.UI.Menu
 
 #region Serialized Variables
 
-        [SerializeField] private Button _firstLevelButton;
-        [SerializeField] private Button _secondLevelButton;
-        [SerializeField] private Button _thirdLevelButton;
-        [SerializeField] private Button _fourthLevelButton;
+        [SerializeField] private Button[] _levelsButtons;
 
         [SerializeField] private MainMenuAnimation _mainMenuAnimation;
         [SerializeField] private ButtonAudioEffect _audioEffectsStartScene;
+        [SerializeField] private InterstitialAds _interstitialAds;
 
 #endregion
 
         private void OnEnable()
         {
-            _firstLevelButton.onClick.AddListener(StartLevelOne);
-            _secondLevelButton.onClick.AddListener(StartLevelTwo);
-            _thirdLevelButton.onClick.AddListener(StartLevelThree);
-            _fourthLevelButton.onClick.AddListener(StartLevelFour);
+            for(int i = 0; i < _levelsButtons.Length; i++)
+            {
+                int index = i + 1;
+                _levelsButtons[i].onClick.AddListener(_interstitialAds.ShowAd);
+                _levelsButtons[i].onClick.AddListener(() => StartLevel(index));
+            }
         }
 
-        private void StartLevelOne()
+        private void StartLevel(int index)
         {
             _audioEffectsStartScene.PlayClickSound();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-            _mainMenuAnimation.KillAnimations();
-        }
-
-        private void StartLevelTwo()
-        {
-            _audioEffectsStartScene.PlayClickSound();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
-            _mainMenuAnimation.KillAnimations();
-        }
-
-        private void StartLevelThree()
-        {
-            _audioEffectsStartScene.PlayClickSound();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 3);
-            _mainMenuAnimation.KillAnimations();
-        }
-
-        private void StartLevelFour()
-        {
-            _audioEffectsStartScene.PlayClickSound();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 4);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + index);
             _mainMenuAnimation.KillAnimations();
         }
 
         private void OnDisable()
         {
-            _firstLevelButton.onClick.RemoveListener(StartLevelOne);
-            _secondLevelButton.onClick.RemoveListener(StartLevelTwo);
-            _thirdLevelButton.onClick.RemoveListener(StartLevelThree);
-            _fourthLevelButton.onClick.RemoveListener(StartLevelFour);
+            foreach (Button button in _levelsButtons)
+            {
+                button.onClick.RemoveAllListeners();
+            }
         }
 
     }

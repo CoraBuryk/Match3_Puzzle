@@ -70,31 +70,16 @@ namespace Assets.Match.Scripts.UI.Menu
         {
             GameObject[] totalStars = new GameObject[3];
 
-            if (_starController.NumOfStar == 1)
+            for (int i = 0; i < _starController.NumOfStar; i++)
             {
-                totalStars[0] = Instantiate(_starPref, transform.position, Quaternion.identity, _starPosition[0].transform);
-                _objectsAnimation.Stars(totalStars[0], _starPosition[0].transform.position.x, _starPosition[0].transform.position.y, 1000);
-            }
+                totalStars[i] = Instantiate(_starPref, transform.position, Quaternion.identity, _starPosition[i].transform);
 
-            if (_starController.NumOfStar == 2)
-            {
-                totalStars[0] = Instantiate(_starPref, transform.position, Quaternion.identity, _starPosition[0].transform);
-                _objectsAnimation.Stars(totalStars[0], _starPosition[0].transform.position.x, _starPosition[0].transform.position.y, 1000);
-
-                totalStars[1] = Instantiate(_starPref, transform.position, Quaternion.identity, _starPosition[1].transform);
-                _objectsAnimation.Stars(totalStars[1], _starPosition[1].transform.position.x, _starPosition[1].transform.position.y, 2000);
-            }
-
-            if (_starController.NumOfStar == 3)
-            {
-                totalStars[0] = Instantiate(_starPref, transform.position, Quaternion.identity, _starPosition[0].transform);
-                _objectsAnimation.Stars(totalStars[0], _starPosition[0].transform.position.x, _starPosition[0].transform.position.y, 1000);
-
-                totalStars[1] = Instantiate(_starPref, transform.position, Quaternion.identity, _starPosition[1].transform);
-                _objectsAnimation.Stars(totalStars[1], _starPosition[1].transform.position.x, _starPosition[0].transform.position.y, 2000);
-
-                totalStars[2] = Instantiate(_starPref, transform.position, Quaternion.identity, _starPosition[2].transform);
-                _objectsAnimation.Stars(totalStars[2], _starPosition[2].transform.position.x, _starPosition[0].transform.position.y, 3000);
+                if (i + 1 == 3)
+                    _objectsAnimation.Stars(totalStars[i], _starPosition[i].transform.position.x, _starPosition[i].transform.position.y, 3000);
+                else if (i + 1 == 2)
+                    _objectsAnimation.Stars(totalStars[i], _starPosition[i].transform.position.x, _starPosition[i].transform.position.y, 2000);
+                else
+                    _objectsAnimation.Stars(totalStars[i], _starPosition[i].transform.position.x, _starPosition[i].transform.position.y, 1000);
             }
         }
 

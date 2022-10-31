@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Assets.Match.Scripts.Audio;
 using Assets.Match.Scripts.Gameplay;
 using Assets.Match.Scripts.ScriptableObjects;
-using Assets.Match.Scripts.UI.Menu;
 
 namespace Assets.Match.Scripts.UI.View
 {
@@ -54,7 +52,7 @@ namespace Assets.Match.Scripts.UI.View
             }
             if (fillAmount >= 0.6f && fillAmount < 0.9f && _starController.NumOfStar == 1)
             {
-                _starController.StarIncrease(_starController.NumOfStar = 2 );
+                _starController.StarIncrease(_starController.NumOfStar = 2);
                 particle = Instantiate(_starParticle, _starsTransfom[1].position, Quaternion.identity);
                 Destroy(particle, 3f);
             }

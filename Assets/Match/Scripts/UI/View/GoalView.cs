@@ -50,7 +50,7 @@ namespace Assets.Match.Scripts.UI.View
                 _blocks[j] = newPos;
             }
 
-            for(int i =0;i < goals.Length;i++)
+            for(int i = 0;i < goals.Length; i++)
             {
                 Block newGoal = Instantiate(_blocks[i], goals[i].transform.position, Quaternion.identity);
                 newGoal.transform.localScale = new Vector3(0.3f, 0.3f,0);

@@ -20,23 +20,8 @@ namespace Assets.Match.Scripts.UI.View
         {
             GameObject[] totalStars = new GameObject[3];
 
-            if (_levelScriptableObject.totalStar == 1)
-            {
-                totalStars[0] = Instantiate(_starPref, _starPosition[0].transform.position, Quaternion.identity, _starPosition[0].transform);          
-            }
-
-            if (_levelScriptableObject.totalStar == 2)
-            {
-                totalStars[0] = Instantiate(_starPref, _starPosition[0].transform.position, Quaternion.identity, _starPosition[0].transform);
-                totalStars[1] = Instantiate(_starPref, _starPosition[1].transform.position, Quaternion.identity, _starPosition[1].transform);         
-            }
-
-            if (_levelScriptableObject.totalStar == 3)
-            {
-                totalStars[0] = Instantiate(_starPref, _starPosition[0].transform.position, Quaternion.identity, _starPosition[0].transform);
-                totalStars[1] = Instantiate(_starPref, _starPosition[1].transform.position, Quaternion.identity, _starPosition[1].transform);
-                totalStars[2] = Instantiate(_starPref, _starPosition[2].transform.position, Quaternion.identity, _starPosition[2].transform);
-            }
+            for (int i = 0; i < _levelScriptableObject.totalStar; i++)
+                totalStars[i] = Instantiate(_starPref, _starPosition[i].transform.position, Quaternion.identity, _starPosition[i].transform);
         }
 
     }

@@ -19,7 +19,7 @@ namespace Assets.Match.Scripts.UI.Menu
 #endregion
 
         private void OnEnable()
-        {
+        {           
             _startButton.onClick.AddListener(StartGame);
             _quitButton.onClick.AddListener(QuitGame);
         }
