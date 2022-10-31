@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Assets.Match.Scripts.Models
+﻿namespace Assets.Match.Scripts.Models
 {
 
     public class Tiles : PositionOnBoard

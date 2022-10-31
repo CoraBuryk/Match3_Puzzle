@@ -37,7 +37,6 @@ namespace Assets.Match.Scripts.Gameplay
         private InputManager _inputManager;
         private Camera _mainCamera;
         private Block _currentBlock;
-        private Obstacles _currentObstacles;
 
         private const int _xSizeMin = 3;
         private const int _xSizeMax = 7;
@@ -45,10 +44,10 @@ namespace Assets.Match.Scripts.Gameplay
         private const int _ySizeMax = 11;
         
         private Vector3 _startPosition;
-        private Vector3 _cameraPosition = new Vector3(0, 0, 0);
+        private Vector3 _cameraPosition = new(0, 0, 0);
         private float _cameraSize = 0;
 
-        private readonly List<BlockController> _selectedBlocks = new List<BlockController>();        
+        private readonly List<BlockController> _selectedBlocks = new();        
         private bool _isSelecting = false;
         private bool _isDrop = false;
 
@@ -194,14 +193,14 @@ namespace Assets.Match.Scripts.Gameplay
                         _currentBlock = MakeBlock(_boardScriptableObject.Tiles[x, y]);
                     else
                     {
-                        _currentObstacles = MakeObstacle(_boardScriptableObject.Tiles[x, y], 
+                        _boardScriptableObject.Obstacles[x, y] = MakeObstacle(_boardScriptableObject.Tiles[x, y], 
                                             _levelScriptableObject.obstaclesOnLevel.type);
-                        _currentBlock = _currentObstacles.GetComponent<Block>();
-                        _currentBlock.GetComponent<BlockController>().SetTarget = new Point(_currentObstacles.GetX,
-                                            _currentObstacles.GetY);
+                        _currentBlock = _boardScriptableObject.Obstacles[x, y].GetComponent<Block>();
+                        _currentBlock.GetComponent<BlockController>().SetTarget = new Point(_boardScriptableObject.Obstacles[x, y].GetX,
+                                            _boardScriptableObject.Obstacles[x, y].GetY);
                     }
                     _boardScriptableObject.Blocks[x, y] = _currentBlock;
-                    _boardScriptableObject.Obstacles[x, y] = _currentObstacles;
+                    _boardScriptableObject.Obstacles[x, y] = _boardScriptableObject.Obstacles[x, y];
                 }
             }
         }
@@ -351,12 +350,11 @@ namespace Assets.Match.Scripts.Gameplay
                 for (int y = 0; y < _boardScriptableObject.YSize; y++)
                 {
                     _currentBlock = _boardScriptableObject.Blocks[x, y];
-                    _currentObstacles = _boardScriptableObject.Obstacles[x, y];
 
                     if (_currentBlock == null || _currentBlock.GetComponent<BlockController>().GetY <= 0 || 
                         _boardScriptableObject.Blocks[x, y - 1] != null)
                         continue;
-                    if (_currentObstacles != null && _currentObstacles.Type == ObstacleType.Ice)
+                    if (_boardScriptableObject.Obstacles[x, y] != null && _boardScriptableObject.Obstacles[x, y].Type == ObstacleType.Ice)
                         continue;
                     if (_boardScriptableObject.Obstacles[x, y - 1] != null && _boardScriptableObject.Obstacles[x, y - 1].Type == ObstacleType.Ice)
                         continue;
@@ -368,11 +366,11 @@ namespace Assets.Match.Scripts.Gameplay
                         {
                             if (yBelow == 0)
                             {
-                                if (_currentObstacles != null && _currentObstacles.Type == ObstacleType.Rock)
+                                if (_boardScriptableObject.Obstacles[x, y] != null && _boardScriptableObject.Obstacles[x, y].Type == ObstacleType.Rock)
                                 {
-                                    _currentObstacles.transform.DOMove(_boardScriptableObject.Tiles[x, yBelow].transform.position, 0.5f);
-                                    _currentObstacles.SetY = yBelow;
-                                    _boardScriptableObject.Obstacles[x, yBelow] = _currentObstacles;
+                                    _boardScriptableObject.Obstacles[x, y].transform.DOMove(_boardScriptableObject.Tiles[x, yBelow].transform.position, 0.5f);
+                                    _boardScriptableObject.Obstacles[x, y].SetY = yBelow;
+                                    _boardScriptableObject.Obstacles[x, yBelow] = _boardScriptableObject.Obstacles[x, y];
                                     _boardScriptableObject.Obstacles[x, y] = null;
                                     _boardScriptableObject.Tiles[x, y].IsObstacle = false;
                                     _boardScriptableObject.Tiles[x, yBelow].IsObstacle = true;
@@ -389,11 +387,11 @@ namespace Assets.Match.Scripts.Gameplay
                         }
                         else
                         {
-                            if (_currentObstacles != null && _currentObstacles.Type == ObstacleType.Rock)
+                            if (_boardScriptableObject.Obstacles[x, y] != null && _boardScriptableObject.Obstacles[x, y].Type == ObstacleType.Rock)
                             {
-                                _currentObstacles.transform.DOMove(_boardScriptableObject.Tiles[x, yBelow + 1].transform.position, 0.5f);
-                                _currentObstacles.SetY = yBelow + 1;
-                                _boardScriptableObject.Obstacles[x, yBelow + 1] = _currentObstacles;
+                                _boardScriptableObject.Obstacles[x, y].transform.DOMove(_boardScriptableObject.Tiles[x, yBelow + 1].transform.position, 0.5f);
+                                _boardScriptableObject.Obstacles[x, y].SetY = yBelow + 1;
+                                _boardScriptableObject.Obstacles[x, yBelow + 1] = _boardScriptableObject.Obstacles[x, y];
                                 _boardScriptableObject.Obstacles[x, y] = null;
                                 _boardScriptableObject.Tiles[x, y].IsObstacle = false;
                                 _boardScriptableObject.Tiles[x, yBelow + 1].IsObstacle = true;
@@ -427,9 +425,8 @@ namespace Assets.Match.Scripts.Gameplay
             {
                 for (var y = 0; y < _boardScriptableObject.YSize; y++)
                 {
-                    _currentObstacles = _boardScriptableObject.Obstacles[x, y];
                     _currentBlock = _boardScriptableObject.Blocks[x, y];
-                    if (_currentObstacles != null)
+                    if (_boardScriptableObject.Obstacles[x, y] != null)
                         continue;
 
                     DestroyBlock(_currentBlock);
