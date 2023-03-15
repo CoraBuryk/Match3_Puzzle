@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using Assets.Match.Scripts.Ads;
 using Assets.Match.Scripts.Audio;
 using Assets.Match.Scripts.UI.Animations;
+using Assets.Match.Scripts.Enum;
 
 namespace Assets.Match.Scripts.UI.Menu
 {
@@ -13,7 +14,7 @@ namespace Assets.Match.Scripts.UI.Menu
 
 #region Serialized Variables
 
-        [SerializeField] private Button[] _levelsButtons;
+        [SerializeField, RequiredField(FieldColor.Yellow)] private Button[] _levelsButtons;
 
         [SerializeField] private MainMenuAnimation _mainMenuAnimation;
         [SerializeField] private ButtonAudioEffect _audioEffectsStartScene;

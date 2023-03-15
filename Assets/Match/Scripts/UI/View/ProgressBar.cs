@@ -11,7 +11,7 @@ namespace Assets.Match.Scripts.UI.View
 
 #region Serialized Variables
 
-        [SerializeField] private LevelScriptableObject _levelScriptableObject;
+        [SerializeField, RequiredField] private LevelsConfigurationScriptable _levelConfig;
         [SerializeField] private Image _mask;
         [SerializeField] private ScoreController _scoreController;
         [SerializeField] private StarController _starController;
@@ -30,11 +30,12 @@ namespace Assets.Match.Scripts.UI.View
         private void OnEnable()
         {
             _scoreController.ScoreChange += GetCurrentFill;
+            _starController.StarChange += CheckForStar;
         }
 
         private void GetCurrentFill()
         {
-            fillAmount = (float)_scoreController.Counter / (float)_levelScriptableObject.maxScore;         
+            fillAmount = (float)_scoreController.Counter / (float)_levelConfig.level.maxScore;         
             _mask.fillAmount = fillAmount;
 
             CheckForStar();
@@ -67,6 +68,7 @@ namespace Assets.Match.Scripts.UI.View
         private void OnDisable()
         {
             _scoreController.ScoreChange -= GetCurrentFill;
+            _starController.StarChange -= CheckForStar;
         }
 
     }

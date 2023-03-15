@@ -7,7 +7,7 @@ namespace Assets.Match.Scripts.UI.View
 
     public class ScoreView : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI _score;
+        [SerializeField] private TextMeshPro _score;
         [SerializeField] private ScoreController _scoreController;
 
         private void OnEnable()

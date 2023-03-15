@@ -19,14 +19,14 @@ namespace Assets.Match.Scripts.UI.Animations
                 Vector2[] path = new[] { new Vector2(0, 0), finalPos };
                 await Task.Delay(800);
 
-                bonus.GetComponent<Rigidbody2D>().DOLocalPath(path, 1.5f, PathType.CatmullRom);
+                bonus.GetComponent<Rigidbody2D>().DOLocalPath(path, 1f, PathType.CatmullRom);
                 if (bonus.GetComponent<Bonus>().Type == BonusType.Rocket)
                 {
-                    bonus.GetComponent<RectTransform>().DOScale(new Vector2(0.55f, 0.55f), 1.5f);
+                    bonus.GetComponent<RectTransform>().DOScale(new Vector2(0.55f, 0.55f), .8f);
                 }
                 else if (bonus.GetComponent<Bonus>().Type == BonusType.Bomb)
                 {
-                    bonus.GetComponent<RectTransform>().DOScale(new Vector2(0.6f, 0.6f), 1.5f);
+                    bonus.GetComponent<RectTransform>().DOScale(new Vector2(0.6f, 0.6f), .8f);
                 }
 
                 _audioEffectsGame.PlayBonusSound();

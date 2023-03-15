@@ -7,7 +7,8 @@ namespace Assets.Match.Scripts.UI.View
 
     public class MoveView : MonoBehaviour       
     {
-        [SerializeField] private TextMeshProUGUI _move;
+        //[SerializeField] private TextMeshProUGUI _move;
+        [SerializeField] private TextMeshPro _move;
         [SerializeField] private MoveController _moveController;
 
         private void OnEnable()

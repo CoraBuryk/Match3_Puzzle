@@ -12,7 +12,8 @@ namespace Assets.Match.Scripts.UI.View
 
 #region Serialized Variables
 
-        [SerializeField] private TextMeshProUGUI[] _goalCounter;
+       // [SerializeField] private TextMeshProUGUI[] _goalCounter;
+        [SerializeField] private TextMeshPro[] _goalCounter;
         [SerializeField] private GoalController _goalController;
         [SerializeField] private List<BlockController> _blocks;
 

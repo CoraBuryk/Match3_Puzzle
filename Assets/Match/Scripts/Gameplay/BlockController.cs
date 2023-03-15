@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using Assets.Match.Scripts.Enum;
 using Assets.Match.Scripts.Models;
 using Assets.Match.Scripts.ScriptableObjects;
+using Assets.Match.Scripts.UI.Animations;
 
 namespace Assets.Match.Scripts.Gameplay
 {
@@ -79,19 +79,7 @@ namespace Assets.Match.Scripts.Gameplay
         {
             foreach (Obstacles ob in block.FindObstacles(block))
             {
-                if (ob.Type == ObstacleType.Rock)
-                {
-                    ob.GetComponent<AudioSource>().Play();
-                    ob.transform.DOScale(0, 0.2f);
-                    Destroy(ob.GetComponent<Block>().gameObject);
-                }
-
-                if (ob.Type == ObstacleType.Ice)
-                {
-                    ob.GetComponent<AudioSource>().Play();
-                    ob.transform.DOScale(0, 0.2f);
-                    Destroy(ob.GetComponent<Block>().gameObject);
-                }
+                ob.GetComponent<ObstacleAnimation>().ObstaclesAnimation(ob);
 
                 _board.Tiles[ob.GetX, ob.GetY].IsObstacle = false;
                 _board.Obstacles[ob.GetX, ob.GetY] = null;
