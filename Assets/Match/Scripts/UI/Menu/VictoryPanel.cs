@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Assets.Match.Scripts.Audio;
 using Assets.Match.Scripts.Gameplay;
 using Assets.Match.Scripts.UI.Animations;
+using System.Threading;
 
 namespace Assets.Match.Scripts.UI.Menu
 {
@@ -23,18 +24,29 @@ namespace Assets.Match.Scripts.UI.Menu
         [SerializeField] private Button _nextLevelButton;
         [SerializeField] private Button _exitButton;
 
+        [SerializeField] private GameObject _gamePanel;
         [SerializeField] private GameObject[] _starPosition;
         [SerializeField] private GameObject _starPref;
 
 #endregion
 
         public bool IsVictoryState { get; set; } = false;
-
+        private bool _isOpen = false;
 
         private void OnEnable()
         {
             _nextLevelButton.onClick.AddListener(ToNextLevel);
             _exitButton.onClick.AddListener(ToStartMenu);
+        }
+
+        private void Awake()
+        {
+            int buildIndex = SceneUtility.GetBuildIndexByScenePath(SceneManager.GetActiveScene().path);
+
+            if (SceneManager.sceneCountInBuildSettings - 1 < buildIndex + 1)         
+                _nextLevelButton.interactable = false;           
+            else          
+                _nextLevelButton.interactable = true;           
         }
 
         private void ToNextLevel()
@@ -43,10 +55,18 @@ namespace Assets.Match.Scripts.UI.Menu
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
-        private void ToStartMenu()
+        private async void ToStartMenu()
         {
-            _buttonAudioEffect.PlayClickSound();
-            SceneManager.LoadScene(0, LoadSceneMode.Single);
+            try
+            {
+                _buttonAudioEffect.PlayClickSound();
+                await Task.Delay(300);
+                SceneManager.LoadScene(0, LoadSceneMode.Single);
+            }
+            catch (System.Exception exception)
+            {
+                Debug.LogError(exception.Message);
+            }
         }
 
         public async void VictoryState()
@@ -55,9 +75,12 @@ namespace Assets.Match.Scripts.UI.Menu
             {
                 IsVictoryState = true;
                 await Task.Delay(1500);
+                _gamePanel.SetActive(_isOpen);
                 _audioEffectsGame.PlayVictorySound();
                 _gameMenuAnimation.ForVictory();
                 CheckNumberOfStars();
+                _starController.SaveStarData();
+               
             }
             catch (System.Exception exception)
             {

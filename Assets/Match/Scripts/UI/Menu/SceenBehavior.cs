@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Assets.Match.Scripts.Gameplay;
+using System.Threading.Tasks;
 
 namespace Assets.Match.Scripts.UI.Menu
 {
@@ -18,7 +19,9 @@ namespace Assets.Match.Scripts.UI.Menu
         [SerializeField] private VictoryPanel _victoryPanel;
         [SerializeField] private GameController _gameController;
 
-#endregion
+        #endregion
+
+        private bool _isGoalReached = false;
 
         private void OnEnable()
         {
@@ -27,9 +30,11 @@ namespace Assets.Match.Scripts.UI.Menu
             _goalController.GoalChange += GoalReached;
         }
 
-        public void GameOver()
+        public async void GameOver()
         {
-            if (_moveController.TotalMove <= 0)
+            await Victory();
+
+            if (_moveController.TotalMove <= 0 && _isGoalReached == false)
             {
                 _gameOverPanel.GameOverState();
             }
@@ -40,9 +45,16 @@ namespace Assets.Match.Scripts.UI.Menu
             if (_goalController.CounterOne <= 0 && _goalController.CounterTwo <= 0 && _goalController.CounterThree <= 0
                 && _moveController.TotalMove >= 0)
             {
+                _isGoalReached = true;
                 _gameController.BonusForMoves();
                 _victoryPanel.VictoryState();
             }
+        }
+
+        public Task Victory()
+        {
+            GoalReached();
+            return Task.CompletedTask;
         }
 
         private void OnDisable()

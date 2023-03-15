@@ -6,7 +6,7 @@ namespace Assets.Match.Scripts.UI.View
 
     public class StarViewOnLevelPanel : MonoBehaviour
     {
-        [SerializeField] private LevelScriptableObject _levelScriptableObject;
+        [SerializeField,RequiredField] private LevelsConfigurationScriptable _levelConfig;
 
         [SerializeField] private GameObject[] _starPosition;
         [SerializeField] private GameObject _starPref;
@@ -20,7 +20,7 @@ namespace Assets.Match.Scripts.UI.View
         {
             GameObject[] totalStars = new GameObject[3];
 
-            for (int i = 0; i < _levelScriptableObject.totalStar; i++)
+            for (int i = 0; i < _levelConfig.level.totalStar; i++)
                 totalStars[i] = Instantiate(_starPref, _starPosition[i].transform.position, Quaternion.identity, _starPosition[i].transform);
         }
 

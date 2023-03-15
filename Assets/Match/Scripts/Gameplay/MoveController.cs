@@ -7,7 +7,7 @@ namespace Assets.Match.Scripts.Gameplay
 
     public class MoveController : MonoBehaviour
     {
-        [SerializeField] private MoveScriptableObjects _move;
+        [SerializeField,RequiredField] private LevelsConfigurationScriptable _levelConfig;
 
         public int TotalMove { get; private set; }
 
@@ -15,12 +15,12 @@ namespace Assets.Match.Scripts.Gameplay
 
         private void Awake()
         {
-            TotalMove = _move.maxMove;
+            TotalMove = _levelConfig.move.maxMove;
         }
 
         public void ResetMoves()
         {
-            NumberOfMoves(_move.maxMove);
+            NumberOfMoves(_levelConfig.move.maxMove);
         }
 
         public void NumberOfMoves(int moves)

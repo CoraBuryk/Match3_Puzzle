@@ -91,8 +91,7 @@ namespace Assets.Match.Scripts.Gameplay
 
         public void Restart()
         {
-            _scoreController.ChangeScore(0);
-            _starController.ResetStar();
+            _scoreController.ChangeScore(0);           
             LevelControl();
             CheckNumberOfGoals();
 
@@ -107,6 +106,5 @@ namespace Assets.Match.Scripts.Gameplay
             _goalController.ResetGoals();
             _moveController.ResetMoves();
         }
-
     }
 }

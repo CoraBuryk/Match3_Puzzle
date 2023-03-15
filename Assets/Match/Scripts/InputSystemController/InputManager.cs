@@ -52,22 +52,22 @@ namespace Assets.Match.Scripts.InputSystemController
         private void EndTouchPrimary(InputAction.CallbackContext context)
         {
             OnEndTouch?.Invoke(Utils.ScreenToWorld(_mainCamera, _playerControls.Touch.PrimaryPosition.ReadValue<Vector2>()));
-        }      
+        }
 
         public Vector2 PressLocation
         {
-            get { return _playerControls.Touch.PrimaryPosition.ReadValue<Vector2>(); }
+            get { return _playerControls.Touch.PrimaryPosition.ReadValue<Vector2>(); }            
         }
 
         private void SwipeStart(Vector2 position)
         {
-            position = _playerControls.Touch.PrimaryPosition.ReadValue<Vector2>();
+            position = PressLocation;
             OnPress.Invoke(true);
         }
 
         private void SwipeEnd(Vector2 position)
         {
-            position = _playerControls.Touch.PrimaryPosition.ReadValue<Vector2>();
+            position = PressLocation;
             OnPress.Invoke(false);
         }
 

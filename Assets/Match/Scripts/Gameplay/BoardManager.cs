@@ -8,6 +8,7 @@ using Assets.Match.Scripts.InputSystemController;
 using Assets.Match.Scripts.Models;
 using Assets.Match.Scripts.ScriptableObjects;
 
+
 namespace Assets.Match.Scripts.Gameplay
 {
 
@@ -23,9 +24,9 @@ namespace Assets.Match.Scripts.Gameplay
 
         [SerializeField] private BlockController[] _blocksPrefabs;
         [SerializeField] private Obstacles[] _obstaclesPrefabs;
-        [SerializeField] private Tiles _boardTilesPrefab;
-        [SerializeField] private LevelScriptableObject _levelScriptableObject;
-        [SerializeField] private BoardScriptableObject _boardScriptableObject;
+        [SerializeField] private Tiles _boardTilesPrefab;       
+        [SerializeField] private BoardScriptableObject _boardScriptableObject; 
+        [SerializeField,RequiredField] private LevelsConfigurationScriptable _levelConfig;
 
 #endregion
 
@@ -51,7 +52,8 @@ namespace Assets.Match.Scripts.Gameplay
         private bool _isSelecting = false;
         private bool _isDrop = false;
 
-#endregion
+ #endregion
+
 
         private void Awake()
         {
@@ -66,30 +68,28 @@ namespace Assets.Match.Scripts.Gameplay
 
         private void Start()
         {
-            if (_levelScriptableObject.isConfigured)
+            if (_levelConfig.level.isConfigured)
             {
-                _levelScriptableObject.totalStar = 0;
-
-                if (_levelScriptableObject.xSize >= _xSizeMin && _levelScriptableObject.xSize <= _xSizeMax)
+                if (_levelConfig.level.xSize >= _xSizeMin && _levelConfig.level.xSize <= _xSizeMax)
                 {
-                    _boardScriptableObject.XSize = _levelScriptableObject.xSize;
+                    _boardScriptableObject.XSize = _levelConfig.level.xSize;
                 }
 
-                if (_levelScriptableObject.ySize >= _ySizeMin && _levelScriptableObject.ySize <= _ySizeMax)
+                if (_levelConfig.level.ySize >= _ySizeMin && _levelConfig.level.ySize <= _ySizeMax)
                 {
-                    _boardScriptableObject.YSize = _levelScriptableObject.ySize;
+                    _boardScriptableObject.YSize = _levelConfig.level.ySize;
                 }
 
-                GenerateBoard(_levelScriptableObject);
+                GenerateBoard(_levelConfig);
                 return;
-            }
+            }  
         }
 
         public void Update()
         {
             if (_isSelecting)
             {
-                CheckForTileAtLocation(Camera.main.ScreenToWorldPoint(_inputManager.PressLocation));
+                CheckForTileAtLocation(_mainCamera.ScreenToWorldPoint(_inputManager.PressLocation));
             }
         }
 
@@ -137,19 +137,19 @@ namespace Assets.Match.Scripts.Gameplay
         private void SetObstacles()
         {
 
-            if (_levelScriptableObject.isObstacleLevel && _levelScriptableObject.obstaclesOnLevel.position.Length > 0)
+            if (_levelConfig.level.isObstacleLevel && _levelConfig.level.obstaclesOnLevel.position.Length > 0)
             {
-                for (int i = 0; i < _levelScriptableObject.obstaclesOnLevel.NumberOfObstacles; i++)
+                for (int i = 0; i < _levelConfig.level.obstaclesOnLevel.NumberOfObstacles; i++)
                 {
-                    _boardScriptableObject.Tiles[_levelScriptableObject.obstaclesOnLevel.position[i].x, 
-                        _levelScriptableObject.obstaclesOnLevel.position[i].y].IsObstacle = true;
+                    _boardScriptableObject.Tiles[_levelConfig.level.obstaclesOnLevel.position[i].x,
+                        _levelConfig.level.obstaclesOnLevel.position[i].y].IsObstacle = true;
                 }
             }
 
-            if (_levelScriptableObject.isObstacleLevel && _levelScriptableObject.obstaclesOnLevel.position.Length == 0)
+            if (_levelConfig.level.isObstacleLevel && _levelConfig.level.obstaclesOnLevel.position.Length == 0)
             {
                
-                for (int i = 0; i < _levelScriptableObject.obstaclesOnLevel.NumberOfObstacles; i++)
+                for (int i = 0; i < _levelConfig.level.obstaclesOnLevel.NumberOfObstacles; i++)
                 {
                     int x = Random.Range(0, _boardScriptableObject.XSize);
                     int y = Random.Range(0, _boardScriptableObject.YSize);
@@ -159,10 +159,10 @@ namespace Assets.Match.Scripts.Gameplay
             }
         }
 
-        private void GenerateBoard(LevelScriptableObject level)
+        private void GenerateBoard(LevelsConfigurationScriptable level)
         {
-            _boardScriptableObject.Tiles = new Tiles[level.xSize, level.ySize];
-            _boardScriptableObject.Obstacles = new Obstacles[level.xSize, level.ySize];
+            _boardScriptableObject.Tiles = new Tiles[level.level.xSize, level.level.ySize];
+            _boardScriptableObject.Obstacles = new Obstacles[level.level.xSize, level.level.ySize];
 
             SearchStartPosition();
 
@@ -193,8 +193,8 @@ namespace Assets.Match.Scripts.Gameplay
                         _currentBlock = MakeBlock(_boardScriptableObject.Tiles[x, y]);
                     else
                     {
-                        _boardScriptableObject.Obstacles[x, y] = MakeObstacle(_boardScriptableObject.Tiles[x, y], 
-                                            _levelScriptableObject.obstaclesOnLevel.type);
+                        _boardScriptableObject.Obstacles[x, y] = MakeObstacle(_boardScriptableObject.Tiles[x, y],
+                                            _levelConfig.level.obstaclesOnLevel.type);
                         _currentBlock = _boardScriptableObject.Obstacles[x, y].GetComponent<Block>();
                         _currentBlock.GetComponent<BlockController>().SetTarget = new Point(_boardScriptableObject.Obstacles[x, y].GetX,
                                             _boardScriptableObject.Obstacles[x, y].GetY);
@@ -224,7 +224,8 @@ namespace Assets.Match.Scripts.Gameplay
             if (hit)
             {
                 BlockController hitBlock = hit.collider.gameObject.GetComponent<BlockController>();
-                BlockController selectedBlock = _selectedBlocks.Find(block => block == hitBlock);
+                BlockController selectedBlock = _selectedBlocks.Find(block => block == hitBlock); 
+                
                 if (selectedBlock == null && _isDrop == false)
                 {
                     if (_selectedBlocks.Count == 0 || _selectedBlocks[_selectedBlocks.Count - 1].TryToMatchWithRenderer(hitBlock))
@@ -254,7 +255,7 @@ namespace Assets.Match.Scripts.Gameplay
             _isSelecting = false;
             TotalMatch = _selectedBlocks.Count;
 
-            if(TotalMatch == 1 && _levelScriptableObject.isBonusLevel == true)
+            if(TotalMatch == 1 && _levelConfig.level.isBonusLevel == true)
             {
                 foreach (BlockController matchedTile in _selectedBlocks)
                 {
@@ -287,9 +288,9 @@ namespace Assets.Match.Scripts.Gameplay
 
             SearchEmptyTile();
 
-            if (_levelScriptableObject.isBonusLevel == true)
+            if (_levelConfig.level.isBonusLevel == true)
             {
-                _bonusController.GetBonus(TotalMatch);
+                _bonusController.GetBonus(TotalMatch);              
             }
 
             _isDrop = false;

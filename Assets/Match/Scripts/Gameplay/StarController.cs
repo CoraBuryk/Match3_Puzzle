@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Assets.Match.Scripts.ScriptableObjects;
+using System;
 using UnityEngine;
-using Assets.Match.Scripts.ScriptableObjects;
 
 namespace Assets.Match.Scripts.Gameplay
 {
 
     public class StarController : MonoBehaviour
     {
-        [SerializeField] private LevelScriptableObject _levelScriptableObject;       
+        [SerializeField, RequiredField] private LevelsConfigurationScriptable _levelConfig;    
 
         public int NumOfStar { get; set; }
 
         public event Action StarChange;
 
-        private int _minStar = 0;
+        private int _minStar;
 
         private void Awake()
         {
@@ -23,7 +23,6 @@ namespace Assets.Match.Scripts.Gameplay
         public void StarIncrease(int minStar)
         {           
             NumOfStar = minStar;
-            _levelScriptableObject.totalStar = NumOfStar;
             StarChange?.Invoke();
         }
 
@@ -31,8 +30,12 @@ namespace Assets.Match.Scripts.Gameplay
         {
             _minStar = 0;
             NumOfStar = _minStar;
-            _levelScriptableObject.totalStar = NumOfStar;
             StarChange?.Invoke();
+        }
+
+        public void SaveStarData()
+        {
+            _levelConfig.level.totalStar = NumOfStar;
         }
 
     }

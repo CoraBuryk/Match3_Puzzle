@@ -25,10 +25,12 @@ namespace Assets.Match.Scripts.UI.Menu
         [SerializeField] private BoardManager _boardManager;
         [SerializeField] private RewardedAds _rewardedAds;
 
+        [SerializeField] private GameObject _gamePanel;
+
 #endregion
 
         public bool IsOverState { get; set; } = false;
-      
+        private bool _isOpen = false;
 
         private void OnEnable()
         {
@@ -39,6 +41,9 @@ namespace Assets.Match.Scripts.UI.Menu
         private void Restart()
         {
             IsOverState = false;
+
+            _gamePanel.SetActive(!_isOpen);
+            _starController.ResetStar();          
             _boardManager.UpdateBoard();
             _buttonAudioEffect.PlayClickSound();
             _gameMenuAnimation.ForRestartAndContinue();
@@ -51,6 +56,7 @@ namespace Assets.Match.Scripts.UI.Menu
             try
             {
                 _buttonAudioEffect.PlayClickSound();
+                _starController.ResetStar();
                 await Task.Delay(200);
                 SceneManager.LoadScene(0, LoadSceneMode.Single);
             }
@@ -65,8 +71,8 @@ namespace Assets.Match.Scripts.UI.Menu
             try
             {
                 IsOverState = true;
-                _starController.ResetStar();
                 await Task.Delay(600);
+                _gamePanel.SetActive(_isOpen);
                 _audioEffectsGame.PlayLoseSound();
                 _gameMenuAnimation.ForGameOver();
             }
@@ -81,6 +87,5 @@ namespace Assets.Match.Scripts.UI.Menu
             _restartLevelButton.onClick.RemoveListener(Restart);
             _exitButton.onClick.RemoveListener(ToStartMenu);
         }
-
     }
 }

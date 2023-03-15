@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Assets.Match.Scripts.ScriptableObjects;
+using System;
 using UnityEngine;
-using Assets.Match.Scripts.ScriptableObjects;
 
 namespace Assets.Match.Scripts.Gameplay
 {
 
     public class GoalController : MonoBehaviour
     {
-        [SerializeField] private GoalScriptableObject _goal;
-
+       [SerializeField, RequiredField] private LevelsConfigurationScriptable _levelConfig;
         public int CounterOne {get; private set;}
 
         public int CounterTwo {get; private set;}
@@ -19,16 +18,16 @@ namespace Assets.Match.Scripts.Gameplay
 
         private void Awake()
         {
-            CounterOne = _goal.valueOfGoalOne;
-            CounterTwo = _goal.valueOfGoalTwo;
-            CounterThree = _goal.valueOfGoalThree;
+            CounterOne = _levelConfig.goal.valueOfGoalOne;
+            CounterTwo = _levelConfig.goal.valueOfGoalTwo;
+            CounterThree = _levelConfig.goal.valueOfGoalThree;
         }
 
         public void ResetGoals()
         {
-            ChangeGoals(_goal.valueOfGoalOne, 1);
-            ChangeGoals(_goal.valueOfGoalTwo, 2);
-            ChangeGoals(_goal.valueOfGoalThree, 3);
+            ChangeGoals(_levelConfig.goal.valueOfGoalOne, 1);
+            ChangeGoals(_levelConfig.goal.valueOfGoalTwo, 2);
+            ChangeGoals(_levelConfig.goal.valueOfGoalThree, 3);
         }
 
         public void ChangeGoals(int newGoal, int counter)

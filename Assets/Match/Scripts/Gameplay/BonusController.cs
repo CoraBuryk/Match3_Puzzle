@@ -29,6 +29,13 @@ namespace Assets.Match.Scripts.Gameplay
 
 #endregion        
 
+        private Camera _camera;
+
+        private void Awake()
+        {
+            _camera = Camera.main;
+        }
+
         public bool IsWithinBounds(object[,] array2D, int x, int y)
         {
             return (x >= 0 && x < array2D.GetLength(0) && y >= 0 && y < array2D.GetLength(1));
@@ -60,13 +67,11 @@ namespace Assets.Match.Scripts.Gameplay
                 {
                     bonusBlock = Instantiate(_rocketPrefab, new Vector3(0, 0, 0), 
                         Quaternion.identity).GetComponent<BlockController>();
-
                 }
                 else
                 {
                     bonusBlock = Instantiate(_bombPrefab, new Vector3(0, 0, 0), 
                         Quaternion.identity).GetComponent<BlockController>();
-
                 }
 
                 bonusBlock.transform.SetParent(transform);
@@ -133,8 +138,8 @@ namespace Assets.Match.Scripts.Gameplay
                         explosion = Instantiate(_explosion, block.transform.position, Quaternion.identity);
                         Destroy(explosion, 2f);
                     }
-                    Camera.main.transform.DOShakePosition(0.8f, new Vector3(0f, 0.08f, -0.01f), 6, 1, false, true)
-                                    .OnComplete(() => _boardManager.SetupCamera());
+                    _camera.transform.DOShakePosition(1f, new Vector3(0f, 0.08f, -0.01f), 6, 1, false, true)
+                                                        .OnComplete(() => _boardManager.SetupCamera());
                 }
                 else if(matchedBlock.GetComponent<Bonus>().Type == BonusType.Rocket)
                 {
@@ -146,7 +151,7 @@ namespace Assets.Match.Scripts.Gameplay
                          explosion = Instantiate(_explosion, block.transform.position, Quaternion.identity);
                         Destroy(explosion, 2f);
                     }
-                    Camera.main.transform.DOShakePosition(0.8f, new Vector3(0.08f, 0f, -0.01f), 6, 1, false, true)
+                    _camera.transform.DOShakePosition(0.8f, new Vector3(0.08f, 0f, -0.01f), 6, 1, false, true)
                                                         .OnComplete(() => _boardManager.SetupCamera());
                 }
 
