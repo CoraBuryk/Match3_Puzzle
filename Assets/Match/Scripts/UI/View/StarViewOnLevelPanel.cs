@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+#if (UNITY_EDITOR)
+using Assets.Match.Scripts.EditorChanges;
+#endif
 using Assets.Match.Scripts.ScriptableObjects;
 
 namespace Assets.Match.Scripts.UI.View
@@ -6,7 +9,10 @@ namespace Assets.Match.Scripts.UI.View
 
     public class StarViewOnLevelPanel : MonoBehaviour
     {
-        [SerializeField,RequiredField] private LevelsConfigurationScriptable _levelConfig;
+#if (UNITY_EDITOR)
+        [RequiredField]
+#endif
+        [SerializeField] private LevelsConfigurationScriptable _levelConfig;
 
         [SerializeField] private GameObject[] _starPosition;
         [SerializeField] private GameObject _starPref;

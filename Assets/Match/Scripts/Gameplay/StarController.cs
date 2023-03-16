@@ -1,13 +1,20 @@
-﻿using Assets.Match.Scripts.ScriptableObjects;
-using System;
+﻿using System;
 using UnityEngine;
+#if (UNITY_EDITOR)
+using Assets.Match.Scripts.EditorChanges;
+#endif
+using Assets.Match.Scripts.ScriptableObjects;
+
 
 namespace Assets.Match.Scripts.Gameplay
 {
 
     public class StarController : MonoBehaviour
     {
-        [SerializeField, RequiredField] private LevelsConfigurationScriptable _levelConfig;    
+#if (UNITY_EDITOR)
+        [RequiredField]
+#endif
+        [SerializeField] private LevelsConfigurationScriptable _levelConfig;    
 
         public int NumOfStar { get; set; }
 

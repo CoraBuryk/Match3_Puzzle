@@ -1,29 +1,34 @@
+#if (UNITY_EDITOR) 
 using UnityEngine;
 using Assets.Match.Scripts.Enum;
 
-public class RequiredField : PropertyAttribute
+namespace Assets.Match.Scripts.EditorChanges
 {
-    public Color color;
-
-    public RequiredField(FieldColor _color = FieldColor.Red)
+    public class RequiredField : PropertyAttribute
     {
-        switch (_color)
+        public Color color;
+
+        public RequiredField(FieldColor _color = FieldColor.Red)
         {
-            case FieldColor.Red:
-                color = Color.red;
-                break;
-            case FieldColor.Green:
-                color = Color.green;
-                break;
-            case FieldColor.Blue:
-                color = Color.blue;
-                break;
-            case FieldColor.Yellow:
-                color = Color.yellow;
-                break;
-            default:
-                color = Color.red;
-                break;
+            switch (_color)
+            {
+                case FieldColor.Red:
+                    color = Color.red;
+                    break;
+                case FieldColor.Green:
+                    color = Color.green;
+                    break;
+                case FieldColor.Blue:
+                    color = Color.blue;
+                    break;
+                case FieldColor.Yellow:
+                    color = Color.yellow;
+                    break;
+                default:
+                    color = Color.red;
+                    break;
+            }
         }
     }
 }
+#endif

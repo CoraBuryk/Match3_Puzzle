@@ -4,6 +4,9 @@ using UnityEngine.UI;
 using Assets.Match.Scripts.Ads;
 using Assets.Match.Scripts.Audio;
 using Assets.Match.Scripts.UI.Animations;
+#if (UNITY_EDITOR)
+using Assets.Match.Scripts.EditorChanges;
+#endif
 using Assets.Match.Scripts.Enum;
 
 namespace Assets.Match.Scripts.UI.Menu
@@ -12,9 +15,12 @@ namespace Assets.Match.Scripts.UI.Menu
     public class LevelPanel : MonoBehaviour
     {
 
-#region Serialized Variables
+        #region Serialized Variables
 
-        [SerializeField, RequiredField(FieldColor.Yellow)] private Button[] _levelsButtons;
+#if (UNITY_EDITOR)
+        [RequiredField(FieldColor.Yellow)]
+#endif
+        [SerializeField] private Button[] _levelsButtons;
 
         [SerializeField] private MainMenuAnimation _mainMenuAnimation;
         [SerializeField] private ButtonAudioEffect _audioEffectsStartScene;
