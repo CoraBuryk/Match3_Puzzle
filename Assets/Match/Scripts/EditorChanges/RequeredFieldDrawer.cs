@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if (UNITY_EDITOR) 
+using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Match.Scripts.EditorChanges
@@ -23,3 +24,4 @@ namespace Assets.Match.Scripts.EditorChanges
         }
     }
 }
+#endif

@@ -7,6 +7,9 @@ using Assets.Match.Scripts.Enum;
 using Assets.Match.Scripts.InputSystemController;
 using Assets.Match.Scripts.Models;
 using Assets.Match.Scripts.ScriptableObjects;
+#if (UNITY_EDITOR) 
+using Assets.Match.Scripts.EditorChanges;
+#endif
 
 
 namespace Assets.Match.Scripts.Gameplay
@@ -25,8 +28,12 @@ namespace Assets.Match.Scripts.Gameplay
         [SerializeField] private BlockController[] _blocksPrefabs;
         [SerializeField] private Obstacles[] _obstaclesPrefabs;
         [SerializeField] private Tiles _boardTilesPrefab;       
-        [SerializeField] private BoardScriptableObject _boardScriptableObject; 
-        [SerializeField,RequiredField] private LevelsConfigurationScriptable _levelConfig;
+        [SerializeField] private BoardScriptableObject _boardScriptableObject;
+
+#if (UNITY_EDITOR)
+        [RequiredField]
+#endif
+        [SerializeField] private LevelsConfigurationScriptable _levelConfig;
 
 #endregion
 

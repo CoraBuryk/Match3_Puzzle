@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
+#if (UNITY_EDITOR)
+using Assets.Match.Scripts.EditorChanges;
+#endif
 using Assets.Match.Scripts.Gameplay;
 using Assets.Match.Scripts.ScriptableObjects;
 
@@ -9,9 +12,12 @@ namespace Assets.Match.Scripts.UI.View
     public class ProgressBar : MonoBehaviour
     {
 
-#region Serialized Variables
+        #region Serialized Variables
 
-        [SerializeField, RequiredField] private LevelsConfigurationScriptable _levelConfig;
+#if (UNITY_EDITOR)
+        [RequiredField]
+#endif
+        [SerializeField] private LevelsConfigurationScriptable _levelConfig;
         [SerializeField] private Image _mask;
         [SerializeField] private ScoreController _scoreController;
         [SerializeField] private StarController _starController;
